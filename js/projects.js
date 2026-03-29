@@ -1,194 +1,188 @@
 // skillbridge/js/projects.js
-// Fetch and display projects from Firestore; fallback to rich sample projects with Unsplash images.
-// Uses Firebase modular SDK (ensure this file is loaded as a module or via your module loader).
-
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 const { db } = window.fb || { db: null };
 
-// Helper: Unsplash query-based image (dynamic, no API key required for simple source)
-function unsplash(query, width = 800, height = 450) {
-  // Using source.unsplash.com featured query to get relevant images
-  // Example: https://source.unsplash.com/featured/?civil-engineering
-  return `https://source.unsplash.com/featured/${width}x${height}/?${encodeURIComponent(query)}`;
+// Unsplash helper (featured query)
+function unsplash(query, w = 1200, h = 700) {
+  return `https://source.unsplash.com/featured/${w}x${h}/?${encodeURIComponent(query)}`;
 }
 
-// Rich sample projects across engineering branches
+// Rich sample projects per branch
 const SAMPLE_PROJECTS = [
-  // Web / Frontend
+  // Electrical
   {
-    title: 'Responsive Portfolio Website',
-    description: 'A modern portfolio with animations, accessibility, and performance optimizations.',
-    tech: ['HTML','CSS','JavaScript'],
-    image: unsplash('web design,ui'),
-    link: 'https://github.com/sample/portfolio',
-    category: 'web'
+    title: 'Arduino Obstacle Avoiding Car',
+    description: 'A 4WD Arduino-based robot that uses ultrasonic sensors to detect obstacles and navigate autonomously. Includes motor driver, battery management, and a small telemetry dashboard.',
+    tech: ['Arduino','Ultrasonic','L298N','C++'],
+    image: unsplash('arduino robot car'),
+    link: '#',
+    category: 'electrical',
+    details: 'Complete build guide, wiring diagrams, and firmware. Learn PID tuning for smooth motion and battery optimization.'
   },
   {
-    title: 'Progressive Web App (PWA) Shop',
-    description: 'Offline-capable PWA with service workers, caching strategies, and push notifications.',
-    tech: ['PWA','Service Worker','IndexedDB'],
-    image: unsplash('progressive web app'),
+    title: 'Line Follower Robot (LFR) with PID',
+    description: 'A line follower robot using IR sensors and PID control for high-speed track following. Includes race-ready tuning and data logging.',
+    tech: ['8051/AVR','IR Sensors','PID'],
+    image: unsplash('line follower robot'),
     link: '#',
-    category: 'web'
+    category: 'electrical',
+    details: 'Includes simulation, hardware BOM, and race performance logs.'
+  },
+  {
+    title: 'PCB Prototype & Sensor Node',
+    description: 'Design and prototype of a compact PCB for a sensor node (temp, humidity, light) with low-power firmware.',
+    tech: ['KiCad','PCB','Embedded C'],
+    image: unsplash('pcb prototype'),
+    link: '#',
+    category: 'electrical',
+    details: 'Gerber files, BOM, and firmware for sleep/wake cycles to maximize battery life.'
   },
 
-  // AI / Data Science
+  // Embedded
   {
-    title: 'Image Classifier Demo',
-    description: 'A convolutional neural network demo that classifies images and shows model explainability.',
-    tech: ['Python','TensorFlow','Flask'],
-    image: unsplash('machine learning,ai'),
+    title: 'Autonomous Quadcopter Controller',
+    description: 'Flight controller firmware with sensor fusion (IMU + barometer) and mission planning.',
+    tech: ['C++','RTOS','Sensors'],
+    image: unsplash('drone embedded'),
     link: '#',
-    category: 'ai'
+    category: 'embedded',
+    details: 'Includes PID tuning, telemetry, and safety failsafes.'
   },
   {
-    title: 'Sales Forecast Dashboard',
-    description: 'Time-series forecasting and interactive visualizations built with Plotly and Flask.',
-    tech: ['Python','Pandas','Plotly'],
-    image: unsplash('data visualization,analytics'),
+    title: 'Smart Home Gateway (Edge)',
+    description: 'Edge gateway aggregating sensor data and exposing secure APIs for home automation.',
+    tech: ['Embedded Linux','MQTT','Docker'],
+    image: unsplash('iot device embedded'),
     link: '#',
-    category: 'datascience'
-  },
-
-  // Mobile
-  {
-    title: 'Cross-platform Task Manager',
-    description: 'A React Native app with offline sync and push notifications for task management.',
-    tech: ['React Native','SQLite','Redux'],
-    image: unsplash('mobile app,ui'),
-    link: '#',
-    category: 'mobile'
+    category: 'embedded',
+    details: 'Edge processing, local rules engine, and secure remote access.'
   },
 
-  // Civil Engineering
-  {
-    title: 'Bridge Load Analysis Simulator',
-    description: 'Finite element simulation of bridge loads with visualization and safety factor reports.',
-    tech: ['Python','FEM','Matlab'],
-    image: unsplash('civil engineering,construction,bridge'),
-    link: '#',
-    category: 'civil'
-  },
-  {
-    title: 'Site Planning Dashboard',
-    description: 'GIS-based site planning tool for construction sequencing and resource allocation.',
-    tech: ['GIS','Leaflet','PostGIS'],
-    image: unsplash('construction site,aerial'),
-    link: '#',
-    category: 'civil'
-  },
-
-  // Mechanical Engineering
+  // Mechanical
   {
     title: 'CNC Toolpath Visualizer',
-    description: 'A tool that converts CAD geometry into optimized CNC toolpaths and simulates machining.',
-    tech: ['CNC','CAM','Python'],
-    image: unsplash('cnc machine,workshop'),
+    description: 'Converts CAD geometry into optimized CNC toolpaths and simulates machining.',
+    tech: ['CAM','Python','G-code'],
+    image: unsplash('cnc machine workshop'),
     link: '#',
-    category: 'mechanical'
+    category: 'mechanical',
+    details: 'Includes collision detection and feedrate optimization.'
   },
   {
     title: 'Thermal System Optimizer',
     description: 'Modeling and optimization of heat exchangers for improved efficiency.',
-    tech: ['MATLAB','CFD','Optimization'],
-    image: unsplash('mechanical engineering,workshop'),
+    tech: ['CFD','MATLAB','Optimization'],
+    image: unsplash('mechanical engineering'),
     link: '#',
-    category: 'mechanical'
+    category: 'mechanical',
+    details: 'Parametric studies and performance charts included.'
   },
 
-  // Electrical Engineering
+  // Civil
   {
-    title: 'Smart Grid Monitoring Dashboard',
-    description: 'Real-time telemetry, fault detection, and visualization for microgrid systems.',
-    tech: ['IoT','MQTT','React'],
-    image: unsplash('electrical circuit,grid'),
+    title: 'Bridge Load Analysis Simulator',
+    description: 'Finite element simulation of bridge loads with visualization and safety factor reports.',
+    tech: ['FEM','Python','Structural'],
+    image: unsplash('bridge construction'),
     link: '#',
-    category: 'electrical'
+    category: 'civil',
+    details: 'Includes load cases, material models, and design recommendations.'
   },
   {
-    title: 'PCB Design & Prototype',
-    description: 'End-to-end PCB design, fabrication files, and firmware for a sensor node.',
-    tech: ['KiCad','C','Embedded'],
-    image: unsplash('circuit board,pcb'),
+    title: 'Site Planning & GIS Dashboard',
+    description: 'GIS-based site planning tool for construction sequencing and resource allocation.',
+    tech: ['GIS','Leaflet','PostGIS'],
+    image: unsplash('construction site aerial'),
     link: '#',
-    category: 'electrical'
-  },
-
-  // Chemical Engineering
-  {
-    title: 'Batch Reactor Simulator',
-    description: 'A chemical reactor simulator with kinetics, mass balance, and visualization.',
-    tech: ['Python','SimPy','NumPy'],
-    image: unsplash('chemical laboratory,beakers'),
-    link: '#',
-    category: 'chemical'
-  },
-  {
-    title: 'Process Safety Checklist App',
-    description: 'A web app for process hazard analysis and safety documentation for plants.',
-    tech: ['React','Node.js','MongoDB'],
-    image: unsplash('chemical plant,lab'),
-    link: '#',
-    category: 'chemical'
+    category: 'civil',
+    details: 'Interactive maps, phasing, and resource heatmaps.'
   },
 
-  // Biomedical Engineering
+  // Environmental
+  {
+    title: 'Solar Farm Performance Analyzer',
+    description: 'Monitoring tool that analyzes solar panel output and suggests maintenance windows.',
+    tech: ['IoT','Python','DataViz'],
+    image: unsplash('solar panels'),
+    link: '#',
+    category: 'environmental',
+    details: 'Time-series analysis, anomaly detection, and maintenance scheduling.'
+  },
+  {
+    title: 'Water Quality Monitoring Buoy',
+    description: 'Low-cost sensors and dashboard for continuous water quality monitoring in rivers.',
+    tech: ['ESP32','Sensors','MQTT'],
+    image: unsplash('water quality monitoring'),
+    link: '#',
+    category: 'environmental',
+    details: 'Includes calibration routines and cloud ingestion pipeline.'
+  },
+
+  // Biomedical
   {
     title: '3D-Printed Prosthetic Hand',
     description: 'Design files, control firmware, and testing results for a low-cost prosthetic hand.',
     tech: ['3D Printing','Embedded','Python'],
-    image: unsplash('prosthetic,biomedical'),
+    image: unsplash('prosthetic hand'),
     link: '#',
-    category: 'biomedical'
-  },
-  {
-    title: 'Wearable Health Monitor',
-    description: 'A wearable device that tracks vitals and streams data to a mobile dashboard.',
-    tech: ['Embedded','Bluetooth','Mobile'],
-    image: unsplash('wearable device,health'),
-    link: '#',
-    category: 'biomedical'
+    category: 'biomedical',
+    details: 'Includes STL files, actuator selection, and EMG control examples.'
   },
 
-  // Environmental Engineering
+  // Chemical
   {
-    title: 'Solar Farm Performance Analyzer',
-    description: 'A monitoring tool that analyzes solar panel output and suggests maintenance windows.',
-    tech: ['IoT','Python','DataViz'],
-    image: unsplash('solar panels,renewable energy'),
+    title: 'Batch Reactor Simulator',
+    description: 'Chemical reactor simulator with kinetics, mass balance, and visualization.',
+    tech: ['Python','SimPy','NumPy'],
+    image: unsplash('chemical laboratory'),
     link: '#',
-    category: 'environmental'
-  },
-  {
-    title: 'Water Quality Monitoring System',
-    description: 'Low-cost sensors and dashboard for continuous water quality monitoring in rivers.',
-    tech: ['Sensors','Arduino','React'],
-    image: unsplash('water testing,environment'),
-    link: '#',
-    category: 'environmental'
+    category: 'chemical',
+    details: 'Parameter sweeps and yield optimization included.'
   },
 
-  // Embedded Systems
+  // AI / Data Science
   {
-    title: 'Autonomous Drone Controller',
-    description: 'Flight control firmware, sensor fusion, and mission planning for a quadcopter.',
-    tech: ['C++','RTOS','Sensors'],
-    image: unsplash('drone,embedded'),
+    title: 'Image Classifier with Explainability',
+    description: 'CNN model with Grad-CAM visualizations and a web demo for inference.',
+    tech: ['TensorFlow','Flask','Docker'],
+    image: unsplash('machine learning ai'),
     link: '#',
-    category: 'embedded'
+    category: 'ai',
+    details: 'Training logs, model weights, and explainability notebooks.'
   },
   {
-    title: 'Smart Home Gateway',
-    description: 'Edge gateway that aggregates sensor data and exposes secure APIs for home automation.',
-    tech: ['Embedded Linux','MQTT','Docker'],
-    image: unsplash('iot device,embedded'),
+    title: 'Sales Forecast Dashboard',
+    description: 'Time-series forecasting and interactive visualizations built with Plotly.',
+    tech: ['Pandas','Prophet','Plotly'],
+    image: unsplash('data visualization analytics'),
     link: '#',
-    category: 'embedded'
+    category: 'datascience',
+    details: 'Backtesting results and deployment instructions.'
+  },
+
+  // Web / Mobile
+  {
+    title: 'Portfolio Website (Responsive)',
+    description: 'A modern portfolio with animations, accessibility, and performance optimizations.',
+    tech: ['HTML','CSS','JavaScript'],
+    image: unsplash('web design ui'),
+    link: '#',
+    category: 'web',
+    details: 'Includes Lighthouse report and accessibility checklist.'
+  },
+  {
+    title: 'Cross-platform Task Manager (Mobile)',
+    description: 'React Native app with offline sync and push notifications.',
+    tech: ['React Native','SQLite','Redux'],
+    image: unsplash('mobile app ui'),
+    link: '#',
+    category: 'mobile',
+    details: 'Sync strategy and background sync examples.'
   }
 ];
 
-// Attempt to fetch projects from Firestore; if fails, return sample projects
+// Fetch projects from Firestore or fallback to sample
 async function fetchProjects() {
   if (!db) {
     console.warn('Firestore not available, using sample projects.');
@@ -198,68 +192,112 @@ async function fetchProjects() {
     const col = collection(db, 'projects');
     const snapshot = await getDocs(col);
     const projects = [];
-    snapshot.forEach(doc => {
-      projects.push({ id: doc.id, ...doc.data() });
-    });
-    // If Firestore has no projects, fallback to sample
-    if (projects.length === 0) return SAMPLE_PROJECTS;
-    return projects;
+    snapshot.forEach(doc => projects.push({ id: doc.id, ...doc.data() }));
+    return projects.length ? projects : SAMPLE_PROJECTS;
   } catch (err) {
     console.warn('Error fetching projects from Firestore:', err.message);
     return SAMPLE_PROJECTS;
   }
 }
 
-async function renderAllProjects() {
-  const projects = await fetchProjects();
-  const target = document.getElementById('projects-container');
-  if (!target) return;
-  target.innerHTML = '';
+// Render cards
+function renderCards(projects) {
+  const container = document.getElementById('projects-container');
+  if (!container) return;
+  container.innerHTML = '';
   projects.forEach(p => {
     const card = document.createElement('div');
     card.className = 'project-card glass';
     card.dataset.category = (p.category || 'web').toLowerCase();
-    const imageSrc = p.image || unsplash(p.category || 'project');
+    const img = p.image || unsplash(p.category || 'project');
     card.innerHTML = `
-      <img src="${imageSrc}" alt="${escapeHtml(p.title)}" />
+      <img src="${img}" alt="${escapeHtml(p.title)}" />
       <div class="project-body">
         <h4>${escapeHtml(p.title)}</h4>
-        <p class="muted">${escapeHtml(p.description)}</p>
+        <p class="muted">${escapeHtml(truncate(p.description, 140))}</p>
         <div class="meta">
           <span class="tech">${(p.tech || []).join('; ')}</span>
-          <a class="btn btn-sm btn-primary" href="${p.link || '#'}" target="_blank" rel="noopener">View</a>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm btn-primary view-btn">View</button>
+            <a class="btn btn-sm btn-outline" href="${p.link || '#'}" target="_blank" rel="noopener">Code</a>
+          </div>
         </div>
       </div>
     `;
-    target.appendChild(card);
+    // attach project data for modal
+    card.querySelector('.view-btn').addEventListener('click', () => openModal(p));
+    container.appendChild(card);
   });
-  // ensure filters work after rendering
+  // ensure filters apply
   window.filterProjects && window.filterProjects('all');
 }
 
-// Simple filter function (exposed globally)
+// Filtering
 function filterProjects(filter) {
   const cards = document.querySelectorAll('.project-card');
   cards.forEach(c => {
-    if (filter === 'all' || c.dataset.category === filter) {
-      c.style.display = '';
-    } else {
-      c.style.display = 'none';
-    }
+    if (filter === 'all' || c.dataset.category === filter) c.style.display = '';
+    else c.style.display = 'none';
   });
 }
 window.filterProjects = filterProjects;
 
-// small helper to avoid XSS in sample text
-function escapeHtml(str = '') {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+// Modal logic
+function openModal(project) {
+  const modal = document.getElementById('project-modal');
+  const content = document.getElementById('modal-content');
+  modal.classList.remove('hidden');
+  const image = project.image || unsplash(project.category || 'project', 1600, 900);
+  content.innerHTML = `
+    <h2 style="margin-top:0">${escapeHtml(project.title)}</h2>
+    <img src="${image}" alt="${escapeHtml(project.title)}" />
+    <div class="modal-body">
+      <div>
+        <p class="muted">${escapeHtml(project.description)}</p>
+        <p>${escapeHtml(project.details || '')}</p>
+        <p class="muted small">Category: <strong>${escapeHtml(project.category)}</strong></p>
+        <p class="muted small">Tech stack: <strong>${(project.tech || []).join(', ')}</strong></p>
+        <div style="margin-top:12px">
+          <a class="btn btn-primary" href="${project.link || '#'}" target="_blank" rel="noopener">Open Code / Demo</a>
+        </div>
+      </div>
+      <aside class="meta-list">
+        <div class="chip"><strong>Author</strong><div class="muted small">Community contributor</div></div>
+        <div class="chip"><strong>Created</strong><div class="muted small">${project.createdAt || '2026'}</div></div>
+        <div class="chip"><strong>Tags</strong><div class="muted small">${(project.tech || []).join('; ')}</div></div>
+      </aside>
+    </div>
+  `;
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  renderAllProjects();
+// Modal close handlers
+function closeModal() {
+  const modal = document.getElementById('project-modal');
+  modal.classList.add('hidden');
+}
+
+// Utilities
+function escapeHtml(str = '') {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function truncate(s, n) { return s && s.length > n ? s.slice(0,n-1) + '…' : s || ''; }
+
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+  // wire filter buttons
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      filterProjects(f);
+    });
+  });
+
+  // modal close
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-backdrop').addEventListener('click', closeModal);
+
+  const projects = await fetchProjects();
+  renderCards(projects);
 });

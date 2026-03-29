@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Skill Tracks — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="roadmap.html">Skill Tracks</a>
+        <a href="projects.html">Projects</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container roadmap-page">
+    <section class="intro glass">
+      <h1>Skill Tracks</h1>
+      <p class="muted">Each track is divided into three progressive levels: Beginner, Intermediate, and Advanced. Each level contains topics, curated resources, and hands-on tasks. Mark topics complete as you progress — your dashboard will reflect the changes and update your placement readiness score.</p>
+    </section>
+
+    <section class="tracks-grid">
+      <!-- Web Development Track -->
+      <article class="track glass">
+        <div class="track-header">
+          <h2>Web Development</h2>
+          <p class="muted">From HTML basics to full-stack applications and deployment.</p>
+        </div>
+
+        <div class="levels">
+          <div class="level glass">
+            <h3>Beginner</h3>
+            <p>Foundations: HTML, CSS, JavaScript basics, Git, and responsive design.</p>
+            <ul class="topics">
+              <li>HTML semantics and accessibility <button class="btn btn-sm mark" data-track="web" data-level="beginner" data-topic="html">Mark Complete</button></li>
+              <li>CSS fundamentals and Flexbox <button class="btn btn-sm mark" data-track="web" data-level="beginner" data-topic="css">Mark Complete</button></li>
+              <li>JavaScript basics and DOM <button class="btn btn-sm mark" data-track="web" data-level="beginner" data-topic="js">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <p>Curated articles, interactive tutorials, and short videos to build a strong foundation.</p>
+              <a class="link" href="#">Beginner resource pack</a>
+            </div>
+          </div>
+
+          <div class="level glass">
+            <h3>Intermediate</h3>
+            <p>Client-side frameworks, state management, REST APIs, and testing.</p>
+            <ul class="topics">
+              <li>React fundamentals and component design <button class="btn btn-sm mark" data-track="web" data-level="intermediate" data-topic="react">Mark Complete</button></li>
+              <li>API integration and asynchronous JS <button class="btn btn-sm mark" data-track="web" data-level="intermediate" data-topic="api">Mark Complete</button></li>
+              <li>Unit testing and debugging <button class="btn btn-sm mark" data-track="web" data-level="intermediate" data-topic="testing">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <a class="link" href="#">Intermediate resource pack</a>
+            </div>
+          </div>
+
+          <div class="level glass">
+            <h3>Advanced</h3>
+            <p>Full-stack architecture, performance optimization, CI/CD, and system design basics.</p>
+            <ul class="topics">
+              <li>Node.js, Express, and databases <button class="btn btn-sm mark" data-track="web" data-level="advanced" data-topic="node">Mark Complete</button></li>
+              <li>Deployment, scaling, and observability <button class="btn btn-sm mark" data-track="web" data-level="advanced" data-topic="deploy">Mark Complete</button></li>
+              <li>System design primer for interviews <button class="btn btn-sm mark" data-track="web" data-level="advanced" data-topic="design">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <a class="link" href="#">Advanced resource pack</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- AI Track -->
+      <article class="track glass">
+        <div class="track-header">
+          <h2>AI & Machine Learning</h2>
+          <p class="muted">A practical track focused on building ML projects and deploying models.</p>
+        </div>
+
+        <div class="levels">
+          <div class="level glass">
+            <h3>Beginner</h3>
+            <p>Python basics, data handling, and statistics fundamentals.</p>
+            <ul class="topics">
+              <li>Python for data science <button class="btn btn-sm mark" data-track="ai" data-level="beginner" data-topic="python">Mark Complete</button></li>
+              <li>Data cleaning and visualization <button class="btn btn-sm mark" data-track="ai" data-level="beginner" data-topic="data">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <a class="link" href="#">Beginner AI pack</a>
+            </div>
+          </div>
+
+          <div class="level glass">
+            <h3>Intermediate</h3>
+            <p>Supervised learning, model evaluation, and feature engineering.</p>
+            <ul class="topics">
+              <li>Regression and classification models <button class="btn btn-sm mark" data-track="ai" data-level="intermediate" data-topic="models">Mark Complete</button></li>
+              <li>Model validation and pipelines <button class="btn btn-sm mark" data-track="ai" data-level="intermediate" data-topic="validation">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <a class="link" href="#">Intermediate AI pack</a>
+            </div>
+          </div>
+
+          <div class="level glass">
+            <h3>Advanced</h3>
+            <p>Deep learning, model deployment, and production ML practices.</p>
+            <ul class="topics">
+              <li>Neural networks and transfer learning <button class="btn btn-sm mark" data-track="ai" data-level="advanced" data-topic="nn">Mark Complete</button></li>
+              <li>Serving models and MLOps basics <button class="btn btn-sm mark" data-track="ai" data-level="advanced" data-topic="mlops">Mark Complete</button></li>
+            </ul>
+            <div class="resources">
+              <h4>Resources</h4>
+              <a class="link" href="#">Advanced AI pack</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="videos glass-section container">
+      <h2>Video Library</h2>
+      <p class="muted">A curated set of open educational videos that complement each track. These are public tutorials and walkthroughs that align with our project-first approach.</p>
+
+      <div class="video-grid">
+        <div class="video-card glass">
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/3JluqTojuME" title="Responsive Web Design - freeCodeCamp" frameborder="0" allowfullscreen></iframe>
+          <h4>Responsive Web Design</h4>
+          <p class="muted">A comprehensive walkthrough of responsive layouts, Flexbox, and CSS Grid.</p>
+        </div>
+
+        <div class="video-card glass">
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/aircAruvnKk" title="Machine Learning Crash Course" frameborder="0" allowfullscreen></iframe>
+          <h4>Machine Learning Crash Course</h4>
+          <p class="muted">An introductory lecture-style video covering core ML concepts and intuition.</p>
+        </div>
+
+        <div class="video-card glass">
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/Ke90Tje7VS0" title="React Tutorial" frameborder="0" allowfullscreen></iframe>
+          <h4>React for Beginners</h4>
+          <p class="muted">A practical tutorial building a small React app from scratch.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer glass">
+      <div class="container footer-grid">
+        <div>
+          <h3>SkillBridge</h3>
+          <p class="muted">© 2026 SkillBridge</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="projects.html">Projects</a>
+          <a href="login.html">Login</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/roadmap.js"></script>
+  <script>
+    // attach mark complete handlers
+    document.querySelectorAll('.mark').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const track = btn.dataset.track;
+        const level = btn.dataset.level;
+        const topic = btn.dataset.topic;
+        markTopicComplete(track, level, topic);
+        btn.innerText = 'Completed';
+        btn.disabled = true;
+      });
+    });
+  </script>
+</body>
+</html>

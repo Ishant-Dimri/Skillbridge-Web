@@ -1,3 +1,4 @@
+<!-- skillbridge/projects.html -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,62 +26,52 @@
   </header>
 
   <main class="container projects-page">
-   <!-- skillbridge/projects.html (replace the filters section and projects container) -->
-<section class="filters glass">
-  <div class="filter-row">
-    <button class="btn btn-sm active" data-filter="all">All</button>
-    <button class="btn btn-sm" data-filter="web">Web</button>
-    <button class="btn btn-sm" data-filter="ai">AI</button>
-    <button class="btn btn-sm" data-filter="mobile">Mobile</button>
-    <button class="btn btn-sm" data-filter="civil">Civil</button>
-    <button class="btn btn-sm" data-filter="mechanical">Mechanical</button>
-    <button class="btn btn-sm" data-filter="electrical">Electrical</button>
-    <button class="btn btn-sm" data-filter="chemical">Chemical</button>
-    <button class="btn btn-sm" data-filter="biomedical">Biomedical</button>
-    <button class="btn btn-sm" data-filter="environmental">Environmental</button>
-    <button class="btn btn-sm" data-filter="embedded">Embedded</button>
-    <button class="btn btn-sm" data-filter="datascience">Data Science</button>
-  </div>
-</section>
-
-<section id="projects-container" class="projects-grid container">
-  <!-- Project cards will be injected here by js/projects.js -->
-  <!-- A short loading placeholder -->
-  <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
-    <strong>Loading projects…</strong>
-    <p class="muted">If Firestore is configured, projects will load from the database. Otherwise sample projects are shown.</p>
-  </div>
-</section>
+    <section class="intro glass">
+      <h1>Project Showcase</h1>
+      <p class="muted">Browse projects across engineering branches. Use the filters to explore domain-specific work — each card includes a description, tech stack, images, and links to code or demos. Click View to open a detailed project page inside the modal.</p>
+    </section>
 
     <section class="filters glass">
-      <div class="filter-row">
+      <div class="filter-row" id="filter-row">
         <button class="btn btn-sm active" data-filter="all">All</button>
         <button class="btn btn-sm" data-filter="web">Web</button>
         <button class="btn btn-sm" data-filter="ai">AI</button>
         <button class="btn btn-sm" data-filter="mobile">Mobile</button>
+        <button class="btn btn-sm" data-filter="civil">Civil</button>
+        <button class="btn btn-sm" data-filter="mechanical">Mechanical</button>
+        <button class="btn btn-sm" data-filter="electrical">Electrical</button>
+        <button class="btn btn-sm" data-filter="chemical">Chemical</button>
+        <button class="btn btn-sm" data-filter="biomedical">Biomedical</button>
+        <button class="btn btn-sm" data-filter="environmental">Environmental</button>
+        <button class="btn btn-sm" data-filter="embedded">Embedded</button>
+        <button class="btn btn-sm" data-filter="datascience">Data Science</button>
       </div>
     </section>
 
     <section id="projects-container" class="projects-grid container">
-      <!-- Project cards loaded dynamically -->
-      <div class="project-card glass placeholder">
-        <img src="https://via.placeholder.com/400x220.png?text=Project+Image" alt="project" />
-        <div class="project-body">
-          <h4>Sample Project</h4>
-          <p class="muted">A sample project demonstrating UI and UX best practices, built with HTML, CSS, and JavaScript.</p>
-          <div class="meta">
-            <span class="tech">HTML; CSS; JS</span>
-            <a class="btn btn-sm btn-primary" href="#">View</a>
-          </div>
-        </div>
+      <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
+        <strong>Loading projects…</strong>
+        <p class="muted">If Firestore is configured, projects will load from the database. Otherwise sample projects are shown.</p>
       </div>
     </section>
+
+    <!-- Project Detail Modal -->
+    <div id="project-modal" class="modal hidden">
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <div class="modal-card glass">
+        <button id="modal-close" class="btn btn-ghost" style="position:absolute;right:18px;top:18px;"><i class="fa-solid fa-xmark"></i></button>
+        <div id="modal-content">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer glass">
       <div class="container footer-grid">
         <div>
           <h3>SkillBridge</h3>
           <p class="muted">© 2026 SkillBridge</p>
+          <p class="muted small">Images courtesy of Unsplash contributors.</p>
         </div>
         <div class="footer-links">
           <a href="index.html">Home</a>
@@ -91,18 +82,23 @@
     </footer>
   </main>
 
-  <script src="js/firebase.js"></script>
-  <script src="js/projects.js"></script>
-  <script>
-    // filter buttons
-    document.querySelectorAll('[data-filter]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        filterProjects(filter);
-      });
-    });
+  <!-- Module loader: ensure firebase.js is loaded first in your site-wide pattern -->
+  <script type="module">
+    import './js/firebase.js';
+    import './js/projects.js';
   </script>
+
+  <style>
+    /* Modal styles (small, scoped) */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:60}
+    .modal.hidden{display:none}
+    .modal-backdrop{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.8));backdrop-filter:blur(6px)}
+    .modal-card{position:relative;z-index:70;max-width:980px;width:94%;padding:20px;border-radius:14px}
+    .modal-card img{width:100%;height:320px;object-fit:cover;border-radius:10px}
+    .modal-body{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+    @media(min-width:900px){.modal-body{grid-template-columns:1fr 360px}}
+    .meta-list{display:flex;flex-direction:column;gap:8px}
+    .meta-list .chip{background:rgba(255,255,255,0.03);padding:8px;border-radius:8px}
+  </style>
 </body>
 </html>

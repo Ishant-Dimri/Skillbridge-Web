@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upload Project — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container upload-page">
+    <section class="intro glass">
+      <h1>Upload a Project</h1>
+      <p class="muted">Share your work with the community and recruiters. Provide a clear description, tech stack, and links to source code or live demos. Images help your project stand out.</p>
+    </section>
+
+    <section class="upload-form glass">
+      <form id="project-upload-form">
+        <label>Project Title</label>
+        <input id="project-title" type="text" placeholder="E.g., Portfolio Website" required />
+
+        <label>Description</label>
+        <textarea id="project-description" rows="5" placeholder="Describe the project, goals, and what you learned." required></textarea>
+
+        <label>Tech Stack (comma separated)</label>
+        <input id="project-tech" type="text" placeholder="React, Node.js, MongoDB" required />
+
+        <label>GitHub / Demo Link</label>
+        <input id="project-link" type="url" placeholder="https://github.com/your/repo" />
+
+        <label>Project Image</label>
+        <input id="project-image" type="file" accept="image/*" />
+
+        <div class="form-row">
+          <button type="submit" class="btn btn-primary">Submit Project</button>
+          <button type="reset" class="btn btn-ghost">Reset</button>
+        </div>
+
+        <p id="upload-status" class="muted small"></p>
+      </form>
+    </section>
+
+    <footer class="site-footer glass">
+      <div class="container footer-grid">
+        <div>
+          <h3>SkillBridge</h3>
+          <p class="muted">© 2026 SkillBridge</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="projects.html">Projects</a>
+          <a href="login.html">Login</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/upload.js"></script>
+  <script>
+    // form submit handled in upload.js
+  </script>
+</body>
+</html>

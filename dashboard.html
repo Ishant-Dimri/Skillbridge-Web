@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="roadmap.html">Skill Tracks</a>
+        <a href="projects.html">Projects</a>
+        <a href="upload.html">Upload</a>
+        <a href="#" id="logout" class="btn btn-ghost">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container dashboard">
+    <section class="welcome glass">
+      <div class="welcome-left">
+        <h2 id="welcome-user">Welcome, Learner</h2>
+        <p class="muted">Your personal progress timeline and placement readiness dashboard. Use this space to track weekly tasks, projects, and milestones.</p>
+      </div>
+      <div class="welcome-right">
+        <div class="score-card glass">
+          <h4>Placement Readiness</h4>
+          <div class="score-large" id="placement-score">0</div>
+          <p class="muted">A dynamic score based on completed tasks, projects, and mock interviews.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="progress-section glass">
+      <h3>Learning Roadmap</h3>
+      <p class="muted">A visual tree shows your current position in the selected track. Complete modules to move forward.</p>
+
+      <div class="road-tree" id="road-tree">
+        <!-- Simple tree / road visualization built with CSS and JS -->
+        <div class="node completed">Beginner</div>
+        <div class="node in-progress">Intermediate</div>
+        <div class="node locked">Advanced</div>
+      </div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-labels">
+          <span>0%</span>
+          <span id="progress-percent">0%</span>
+          <span>100%</span>
+        </div>
+        <div class="progress-bar glass">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tasks-announcements">
+      <div class="tasks glass">
+        <h3>Weekly Tasks</h3>
+        <p class="muted">Complete these tasks to improve your placement score.</p>
+        <ul id="tasks-list" class="task-list">
+          <!-- tasks populated by JS -->
+        </ul>
+      </div>
+
+      <div class="announcements glass">
+        <h3>Announcements</h3>
+        <div id="announcements-list">
+          <div class="announcement">
+            <h4>New AI Track Launched</h4>
+            <p class="muted">We added an AI skill track with hands-on projects and interview prep.</p>
+            <small class="muted">Posted 3 days ago</small>
+          </div>
+          <div class="announcement">
+            <h4>Hackathon: Build for Impact</h4>
+            <p class="muted">Participate in our monthly hackathon to win mentorship sessions and recruiter reviews.</p>
+            <small class="muted">Posted 1 week ago</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="projects-preview glass">
+      <h3>Your Projects</h3>
+      <p class="muted">Showcase your best work. Projects contribute heavily to your placement score.</p>
+      <div id="projects-grid" class="projects-grid">
+        <!-- project cards loaded by projects.js -->
+      </div>
+      <div class="panel-cta">
+        <a class="btn btn-primary" href="upload.html">Upload a Project</a>
+        <a class="btn btn-ghost" href="projects.html">Browse All Projects</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/projects.js"></script>
+  <script>
+    // initialize dashboard UI after auth
+    document.addEventListener('DOMContentLoaded', () => {
+      // auth.js will call onAuthStateChanged and then dashboard.js will populate content
+    });
+
+    document.getElementById('logout').addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutUser();
+    });
+  </script>
+</body>
+</html>

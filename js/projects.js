@@ -12,8 +12,8 @@ const SAMPLE_PROJECTS = [
     title: 'Arduino Obstacle Avoiding Car',
     description: 'A 4WD Arduino-based robot that uses ultrasonic sensors to detect obstacles and navigate autonomously. Includes motor driver, battery management, and a small telemetry dashboard.',
     tech: ['Arduino','Ultrasonic','L298N','C++'],
-    image:cncmachine.jpg,
-    link: '#',
+    image:aurdinocar.png,
+    link: 'https://github.com/Ishant-Dimri/Skillbridge-Web/blob/main/aurdinocar.png',
     category: 'electrical',
     details: 'Complete build guide, wiring diagrams, and firmware. Learn PID tuning for smooth motion and battery optimization.'
   },

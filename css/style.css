@@ -176,6 +176,11 @@ body{
 .admin-card{margin-top:12px;padding:12px}
 
 /* Utilities */
+/* project modal chips and meta */
+.meta-list .chip{padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+.project-card .project-body h4{margin:0 0 6px}
+.project-card .project-body p{margin:0}
+
 .muted{color:var(--muted)}
 .small{font-size:13px}
 .link{color:#cbd5e1;text-decoration:underline}

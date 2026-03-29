@@ -174,9 +174,17 @@
     </footer>
   </main>
 
-  <script src="js/firebase.js"></script>
-  <script src="js/roadmap.js"></script>
-  <script>
+<!-- Replace existing <script> tags with this block -->
+<script type="module">
+  // Load firebase first, then other modules that depend on it
+  import './js/firebase.js';
+  import './js/auth.js';
+  import './js/projects.js';
+  import './js/dashboard.js';
+  import './js/upload.js';
+  import './js/admin.js';
+</script>
+
     // attach mark complete handlers
     document.querySelectorAll('.mark').forEach(btn => {
       btn.addEventListener('click', (e) => {

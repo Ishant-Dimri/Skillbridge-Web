@@ -25,10 +25,32 @@
   </header>
 
   <main class="container projects-page">
-    <section class="intro glass">
-      <h1>Project Showcase</h1>
-      <p class="muted">Browse projects built by learners. Each project card includes a description, tech stack, and links to code or live demos. Projects are reviewed by mentors and can be filtered by category.</p>
-    </section>
+   <!-- skillbridge/projects.html (replace the filters section and projects container) -->
+<section class="filters glass">
+  <div class="filter-row">
+    <button class="btn btn-sm active" data-filter="all">All</button>
+    <button class="btn btn-sm" data-filter="web">Web</button>
+    <button class="btn btn-sm" data-filter="ai">AI</button>
+    <button class="btn btn-sm" data-filter="mobile">Mobile</button>
+    <button class="btn btn-sm" data-filter="civil">Civil</button>
+    <button class="btn btn-sm" data-filter="mechanical">Mechanical</button>
+    <button class="btn btn-sm" data-filter="electrical">Electrical</button>
+    <button class="btn btn-sm" data-filter="chemical">Chemical</button>
+    <button class="btn btn-sm" data-filter="biomedical">Biomedical</button>
+    <button class="btn btn-sm" data-filter="environmental">Environmental</button>
+    <button class="btn btn-sm" data-filter="embedded">Embedded</button>
+    <button class="btn btn-sm" data-filter="datascience">Data Science</button>
+  </div>
+</section>
+
+<section id="projects-container" class="projects-grid container">
+  <!-- Project cards will be injected here by js/projects.js -->
+  <!-- A short loading placeholder -->
+  <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
+    <strong>Loading projects…</strong>
+    <p class="muted">If Firestore is configured, projects will load from the database. Otherwise sample projects are shown.</p>
+  </div>
+</section>
 
     <section class="filters glass">
       <div class="filter-row">

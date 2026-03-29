@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container admin-page">
+    <section class="admin-grid">
+      <aside class="admin-side glass">
+        <h3>Admin Controls</h3>
+        <ul>
+          <li><a href="#add-task">Add Task</a></li>
+          <li><a href="#add-resource">Add Resource</a></li>
+          <li><a href="#view-users">View Users</a></li>
+        </ul>
+      </aside>
+
+      <section class="admin-main glass">
+        <h2>Admin Dashboard</h2>
+        <p class="muted">Use these tools to manage tasks, resources, and review user activity. This interface is designed for platform administrators and mentors.</p>
+
+        <div id="add-task" class="admin-card glass">
+          <h4>Add Task</h4>
+          <form id="admin-task-form">
+            <label>Task Title</label>
+            <input id="task-title" type="text" required />
+            <label>Description</label>
+            <textarea id="task-desc" rows="3"></textarea>
+            <div class="form-row">
+              <button type="submit" class="btn btn-primary">Add Task</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="add-resource" class="admin-card glass">
+          <h4>Add Resource</h4>
+          <form id="admin-resource-form">
+            <label>Resource Title</label>
+            <input id="resource-title" type="text" required />
+            <label>Link</label>
+            <input id="resource-link" type="url" />
+            <div class="form-row">
+              <button type="submit" class="btn btn-primary">Add Resource</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="view-users" class="admin-card glass">
+          <h4>Users</h4>
+          <p class="muted">A list of registered users. For demo purposes this can be static or populated from Firestore.</p>
+          <div id="users-list">
+            <!-- dynamic or static list -->
+            <div class="user-row">
+              <strong>Ash Sharma</strong>
+              <span class="muted">ash@example.com</span>
+            </div>
+            <div class="user-row">
+              <strong>Priya Singh</strong>
+              <span class="muted">priya@example.com</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

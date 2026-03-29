@@ -4,10 +4,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/f
 const { db } = window.fb || { db: null };
 
 // Unsplash helper (featured query)
-function unsplash(query, w = 1200, h = 700) {
-  return `https://source.unsplash.com/featured/${w}x${h}/?${encodeURIComponent(query)}`;
-}
-
+function unsplash(query, w = 1200, h = 700) 
 // Rich sample projects per branch
 const SAMPLE_PROJECTS = [
   // Electrical
@@ -15,7 +12,7 @@ const SAMPLE_PROJECTS = [
     title: 'Arduino Obstacle Avoiding Car',
     description: 'A 4WD Arduino-based robot that uses ultrasonic sensors to detect obstacles and navigate autonomously. Includes motor driver, battery management, and a small telemetry dashboard.',
     tech: ['Arduino','Ultrasonic','L298N','C++'],
-    image: unsplash('arduino robot car'),
+    image:cncmachine.jpg,
     link: '#',
     category: 'electrical',
     details: 'Complete build guide, wiring diagrams, and firmware. Learn PID tuning for smooth motion and battery optimization.'

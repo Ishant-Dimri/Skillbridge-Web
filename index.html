@@ -36,7 +36,12 @@
           <h1 class="display">SkillBridge</h1>
           <p class="lead">A modern industry-readiness platform that helps learners transform knowledge into real projects, build a portfolio, and get job-ready with guided roadmaps, mentor-backed projects, and placement-focused tasks.</p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="signup.html" onclick="location.href='login.html'">Get Started</a>
+            <!-- Before: inconsistent href + onclick -->
+<!-- <a class="btn btn-primary" href="signup.html" onclick="location.href='login.html'">Get Started</a> -->
+
+<!-- After: consistent link to login -->
+<a class="btn btn-primary" href="login.html">Get Started</a>
+
             <a class="btn btn-outline" href="#how-it-works">Explore</a>
           </div>
 

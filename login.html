@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="roadmap.html">Skill Tracks</a>
+        <a href="projects.html">Projects</a>
+        <a href="login.html" class="btn btn-ghost">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container auth-page">
+    <section class="auth-grid glass">
+      <div class="auth-left">
+        <h2>Welcome back</h2>
+        <p class="muted">Sign in to continue your learning journey, track progress, and showcase projects to recruiters.</p>
+
+        <form id="login-form" class="auth-form">
+          <label>Email</label>
+          <input id="login-email" type="email" placeholder="you@domain.com" required />
+          <label>Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" minlength="6" required />
+          <div class="form-row">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <button id="google-signin" type="button" class="btn btn-outline"><i class="fa-brands fa-google"></i> Sign in with Google</button>
+          </div>
+          <p class="muted small">Don't have an account? <a href="#" id="show-signup">Create one</a></p>
+        </form>
+      </div>
+
+      <div class="auth-right glass">
+        <h3>Create an account</h3>
+        <p class="muted">Join SkillBridge to access guided roadmaps, projects, and placement tools.</p>
+
+        <form id="signup-form" class="auth-form hidden">
+          <label>Full name</label>
+          <input id="signup-name" type="text" placeholder="Your name" required />
+          <label>Email</label>
+          <input id="signup-email" type="email" placeholder="you@domain.com" required />
+          <label>Password</label>
+          <input id="signup-password" type="password" placeholder="Create a password" minlength="6" required />
+          <div class="form-row">
+            <button type="submit" class="btn btn-primary">Sign up</button>
+            <button id="back-to-login" type="button" class="btn btn-ghost">Back</button>
+          </div>
+          <p class="muted small">By signing up you agree to our Terms and Privacy Policy.</p>
+        </form>
+
+        <div class="auth-info">
+          <h4>Why create an account?</h4>
+          <ul>
+            <li>Save progress and roadmaps</li>
+            <li>Upload and showcase projects</li>
+            <li>Get a placement readiness score</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // UI toggles
+    document.getElementById('show-signup').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('signup-form').classList.remove('hidden');
+      document.getElementById('login-form').classList.add('hidden');
+    });
+    document.getElementById('back-to-login').addEventListener('click', () => {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

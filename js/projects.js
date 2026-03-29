@@ -201,6 +201,38 @@ async function fetchProjects() {
 }
 
 // Render cards
+// inside renderCards(projects) when creating each card
+const imgSrc = p.image || unsplash(p.category || 'project');
+const imgEl = document.createElement('img');
+imgEl.src = imgSrc;
+imgEl.alt = p.title || 'Project image';
+imgEl.loading = 'lazy';
+imgEl.crossOrigin = 'anonymous';
+imgEl.referrerPolicy = 'no-referrer';
+
+// fallback placeholder if Unsplash fails
+imgEl.onerror = function() {
+  this.onerror = null;
+  this.src = 'https://via.placeholder.com/800x450.png?text=Project+Image';
+  this.referrerPolicy = 'no-referrer';
+};
+
+card.innerHTML = `
+  <div class="img-wrap" style="overflow:hidden;border-radius:10px"></div>
+  <div class="project-body">
+    <h4>${escapeHtml(p.title)}</h4>
+    <p class="muted">${escapeHtml(truncate(p.description, 140))}</p>
+    <div class="meta">
+      <span class="tech">${(p.tech || []).join('; ')}</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-primary view-btn">View</button>
+        <a class="btn btn-sm btn-outline" href="${p.link || '#'}" target="_blank" rel="noopener">Code</a>
+      </div>
+    </div>
+  </div>
+`;
+card.querySelector('.img-wrap').appendChild(imgEl);
+
 function renderCards(projects) {
   const container = document.getElementById('projects-container');
   if (!container) return;

@@ -67,17 +67,10 @@
       </div>
     </footer>
   </main>
+<script type="module">
+  try { await import('./js/firebase.js'); } catch(e) { /* ignore if missing */ }
+  await import('./js/projects.js');
+</script>
 
-  <!-- Module loader: firebase.js first if you use Firebase, then projects.js -->
-  <script type="module">
-    // If you have a firebase.js module that sets window.fb, import it first.
-    // If you do not use Firebase, remove the import line below.
-    try {
-      await import('./js/firebase.js');
-    } catch (e) {
-      // ignore if firebase.js is not present
-    }
-    await import('./js/projects.js');
-  </script>
 </body>
 </html>

@@ -86,6 +86,16 @@ function renderCards(projects = []) {
     container.innerHTML = '<div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;"><strong>No projects found</strong><p class="muted">Add sample projects or seed Firestore.</p></div>';
     return;
   }
+  document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const projects = await fetchProjects();
+    renderCards(projects || []);
+  } catch (err) {
+    console.error('fetchProjects failed', err);
+    renderCards([]); // fallback
+  }
+});
+
 
   projects.forEach(p => {
     const card = document.createElement('div');

@@ -104,12 +104,17 @@ onAuthStateChanged(auth, async (user) => {
 const portfolioBtn = document.getElementById('portfolio-link-btn');
 
 if (portfolioBtn && user) {
-    // This safely calculates your website address, ensuring it works perfectly on GitHub Pages
-    const currentUrl = window.location.href;
-    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
-    
-    // Attach the user's unique ID to the button
-    portfolioBtn.href = `${baseUrl}/portfolio.html?user=${user.uid}`;
+  // This tells the button exactly what to do when clicked
+portfolioBtn.onclick = (event) => {
+    event.preventDefault(); // Stops the '#' from doing anything
+
+    if (user && user.uid) {
+        // Opens the correct link in a new tab securely
+        window.open(`portfolio.html?user=${user.uid}`, '_blank');
+    } else {
+        alert("Still loading your profile... please wait one second and try again!");
+    }
+};
 }
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)

@@ -67,10 +67,9 @@
       </div>
     </footer>
   </main>
-<script type="module">
-  try { await import('./js/firebase.js'); } catch(e) { /* ignore if missing */ }
-  await import('./js/projects.js');
-</script>
-
+<!-- Standard Module Loading -->
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/projects.js"></script>
+<script src="js/chat.js"></script>
 </body>
 </html>

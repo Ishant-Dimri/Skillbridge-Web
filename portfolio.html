@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Developer Portfolio | SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient">
+  
+  <header class="nav glass">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <div class="logo-glow">SkillBridge</div>
+      </a>
+      <div class="nav-links">
+        <span class="pill" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981;">
+          <i class="fa-solid fa-check-circle"></i> Verified Profile
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container section">
+    <!-- Loading State -->
+    <div id="loading-state" style="text-align: center; padding: 48px;">
+      <h2 class="muted">Loading Profile...</h2>
+    </div>
+
+    <!-- Main Profile Content (Hidden until data loads) -->
+    <div id="profile-content" class="hidden">
+      
+      <!-- Profile Header -->
+      <section class="glass" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px;">
+        <div>
+          <h1 id="user-name" style="margin: 0; font-size: 36px; background: linear-gradient(90deg, #fff, #cbd5e1); -webkit-background-clip: text; color: transparent;">Student Developer</h1>
+          <p class="muted" style="font-size: 16px; margin-top: 4px;">SkillBridge Candidate • Ready for Placement</p>
+        </div>
+        <div>
+          <a id="contact-btn" href="#" class="btn btn-primary">Contact Candidate</a>
+        </div>
+      </section>
+
+      <!-- Stats Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px;">
+        
+        <!-- Readiness Score -->
+        <div class="glass score-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <h3 class="muted" style="margin-top: 0;">Placement Readiness</h3>
+          <div class="score-large" id="user-score" style="font-size: 48px;">0%</div>
+          <div class="progress-bar" style="width: 80%; margin-top: 12px; height: 8px;">
+            <div id="score-fill" class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Verified Skills -->
+        <div class="glass">
+          <h3 style="margin-top: 0; margin-bottom: 16px;">Acquired Skills</h3>
+          <div id="user-skills" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <!-- Skills injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Showcase -->
+      <section>
+        <h2 style="margin-bottom: 16px;">Featured Work</h2>
+        <div id="user-projects" class="projects-grid">
+          <!-- Projects injected here -->
+        </div>
+      </section>
+      
+    </div>
+  </main>
+
+  <script type="module" src="js/portfolio.js"></script>
+</body>
+</html>

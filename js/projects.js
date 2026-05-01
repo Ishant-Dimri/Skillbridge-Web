@@ -40,7 +40,55 @@ const SAMPLE_PROJECTS = [
     link: '#',
     category: 'datascience',
     details: 'Backtesting results and deployment instructions.'
-  }
+  },
+  {
+        title: 'SkillBridge Learning Platform',
+        description: 'A student-focused platform featuring a Skill Gap Analyzer and a unique 5% progress decay system with quiz-based recovery.',
+        tech: ['React', 'Firebase', 'Node.js'],
+        link: '#',
+        category: 'web',
+        details: 'Includes user authentication, dynamic roadmaps, and automated progress tracking.'
+    },
+    {
+        title: 'Piezoelectric Ghost Power Harvester',
+        description: 'Multidisciplinary engineering hardware-simulation hybrid focusing on energy scavenging using piezoelectric systems and digital twins.',
+        tech: ['Arduino', 'Piezo Sensors', 'MATLAB'],
+        link: '#',
+        category: 'electrical',
+        details: 'Simulates energy capture metrics and hardware efficiency in low-power environments.'
+    },
+    {
+        title: 'Campus Resource Coordinator App',
+        description: 'A coordination-based software solution designed to manage and track water and electricity distribution for resource-scarce campus environments.',
+        tech: ['JavaScript', 'Express', 'MongoDB'],
+        link: '#',
+        category: 'environmental',
+        details: 'Replaces assumption of natural water access with a strict digital allocation and tracking system.'
+    },
+    {
+        title: 'Seve Perfume E-Commerce SPA',
+        description: 'A modular, single-page web application featuring dynamic routing for home, contact, and cart sections with localized INR currency formatting.',
+        tech: ['HTML5', 'CSS3', 'Vanilla JS'],
+        link: '#',
+        category: 'web',
+        details: 'Focuses on modern UI/UX design principles and seamless state management without heavy frameworks.'
+    },
+    {
+        title: 'Heart Connect Emotion Engine',
+        description: 'A mobile application architecture focused on emotion-based matching, including comprehensive growth projections and risk assessments.',
+        tech: ['Flutter', 'Firebase Auth', 'Dart'],
+        link: '#',
+        category: 'mobile',
+        details: 'Includes foundational business logic, user flow diagrams, and backend schema planning.'
+    },
+    {
+        title: 'Cinematic 4D Video Generator',
+        description: 'Utilized advanced generative AI models and highly structured prompt engineering to produce 4K cinematic visualizations of the fourth dimension.',
+        tech: ['GenAI Tools', 'Prompt Engineering', 'Video Editing'],
+        link: '#',
+        category: 'ai',
+        details: 'Explores the intersection of generative artificial intelligence and complex theoretical physics visualization.'
+    }
 ];
 
 // ======= DATA FETCH =======

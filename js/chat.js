@@ -1,7 +1,7 @@
 // chat.js — Global SkillBridge AI Assistant (Final Version)
 
 // ⚠️ PASTE YOUR REAL GEMINI API KEY HERE
-const GEMINI_API_KEY = "AIzaSyBzLi85KvjcUFzXF9I3QZ75FLbFiOabLZQ"; 
+const GEMINI_API_KEY = "AIzaSyDu4ayWcZcPvnpiXG4P9vz509M4AWWr24M"; 
 
 const SYSTEM_PROMPT = `
 You are the official AI Assistant for SkillBridge, a student engineering learning platform.

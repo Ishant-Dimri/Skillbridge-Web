@@ -1,4 +1,4 @@
-// chat.js — Global SkillBridge AI Assistant (Upgraded)
+// chat.js — Global SkillBridge AI Assistant (Final Version)
 
 // ⚠️ PASTE YOUR REAL GEMINI API KEY HERE
 const GEMINI_API_KEY = "AIzaSyBzLi85KvjcUFzXF9I3QZ75FLbFiOabLZQ"; 
@@ -14,7 +14,6 @@ Here are the rules and facts you must know:
 Keep answers concise, friendly, and highly encouraging. Use emojis.
 `;
 
-// 1. INJECT THE HTML AUTOMATICALLY
 function injectChatUI() {
     if (document.getElementById('chat-widget')) return;
 
@@ -39,11 +38,9 @@ function injectChatUI() {
             </div>
         </div>
     </div>`;
-    
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 }
 
-// 2. INITIALIZE LOGIC & MEMORY
 document.addEventListener('DOMContentLoaded', () => {
     injectChatUI(); 
 
@@ -54,53 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEl = document.getElementById('chat-input');
     const messagesEl = document.getElementById('chat-messages');
 
-    // --- MEMORY SYSTEM ---
-    let chatHistory = JSON.parse(sessionStorage.getItem('sb_chat_history')) || [
-        { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-        { role: "model", parts: [{ text: "Understood! I am ready." }] }
-    ];
+    // Load Memory safely
+    let chatHistory = JSON.parse(sessionStorage.getItem('sb_history')) || [];
+    let isOpen = sessionStorage.getItem('sb_open') === 'true';
 
-    // Explicitly set initial display
-    if (sessionStorage.getItem('sb_chat_open') === 'true') {
-        windowEl.style.display = 'flex';
-        fab.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-    } else {
+    // Init UI State
+    windowEl.style.display = isOpen ? 'flex' : 'none';
+    fab.innerHTML = isOpen ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-robot"></i>';
+
+    // Render old messages
+    chatHistory.forEach(msg => appendMessage(msg.parts[0].text, msg.role === 'user' ? 'user' : 'bot'));
+
+    // Toggle Button Logic (Fixed)
+    fab.addEventListener('click', () => {
+        isOpen = !isOpen;
+        windowEl.style.display = isOpen ? 'flex' : 'none';
+        fab.innerHTML = isOpen ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-robot"></i>';
+        sessionStorage.setItem('sb_open', isOpen);
+    });
+
+    // "X" Close Button Logic (Fixed)
+    closeBtn.addEventListener('click', () => {
+        isOpen = false;
         windowEl.style.display = 'none';
         fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
-    }
-
-    if (chatHistory.length > 2) {
-        for (let i = 2; i < chatHistory.length; i++) {
-            const msg = chatHistory[i];
-            const sender = msg.role === 'user' ? 'user' : 'bot';
-            appendMessage(msg.parts[0].text, sender);
-        }
-    }
-
-    function saveMemory() {
-        sessionStorage.setItem('sb_chat_history', JSON.stringify(chatHistory));
-    }
-
-    // --- BULLETPROOF TOGGLE LOGIC ---
-    fab.addEventListener('click', () => {
-        if (windowEl.style.display === 'none') {
-            windowEl.style.display = 'flex'; // Open
-            fab.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-            sessionStorage.setItem('sb_chat_open', 'true');
-        } else {
-            windowEl.style.display = 'none'; // Close
-            fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
-            sessionStorage.setItem('sb_chat_open', 'false');
-        }
+        sessionStorage.setItem('sb_open', 'false');
     });
 
-    closeBtn.addEventListener('click', () => {
-        windowEl.style.display = 'none'; // Force Close
-        fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
-        sessionStorage.setItem('sb_chat_open', 'false');
-    });
-
-    // --- SEND LOGIC & SMART ERROR HANDLING ---
+    // Send Logic
     sendBtn.addEventListener('click', handleSend);
     inputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
 
@@ -112,36 +90,41 @@ document.addEventListener('DOMContentLoaded', () => {
         inputEl.value = '';
         
         chatHistory.push({ role: "user", parts: [{ text: text }] });
-        saveMemory(); 
-
         const typingId = appendMessage("Thinking...", 'bot');
 
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: chatHistory })
+                body: JSON.stringify({ 
+                    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                    contents: chatHistory 
+                })
             });
             
             const data = await response.json();
 
-            // Did Google reject the request? If so, throw the exact error.
             if (!response.ok) {
-                console.error("Google API Error:", data);
-                throw new Error(data.error?.message || "Unknown Google API Error");
+                chatHistory.pop(); // Remove the failed message from memory
+                throw new Error(data.error?.message || "Google API Error");
             }
 
             const botReply = data.candidates[0].content.parts[0].text;
             chatHistory.push({ role: "model", parts: [{ text: botReply }] });
-            saveMemory(); 
+            sessionStorage.setItem('sb_history', JSON.stringify(chatHistory));
 
             document.getElementById(typingId).innerHTML = formatText(botReply);
             messagesEl.scrollTop = messagesEl.scrollHeight;
 
         } catch (error) {
-            console.error("Full Error:", error);
-            // Print the ACTUAL error directly into the chat bubble!
-            document.getElementById(typingId).innerHTML = `<strong>Error:</strong> ${error.message}`;
+            console.error(error);
+            document.getElementById(typingId).innerHTML = `<strong style="color: #ef4444;">Error:</strong> ${error.message}`;
+            
+            // If the key is totally broken, wipe the corrupted memory so it can try fresh next time
+            if (error.message.includes("API key not valid")) {
+                sessionStorage.removeItem('sb_history');
+                chatHistory = [];
+            }
         }
     }
 
@@ -159,11 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
         div.style.borderRadius = isUser ? '16px 16px 2px 16px' : '2px 16px 16px 16px';
         div.style.maxWidth = '85%';
         div.style.lineHeight = '1.5';
-        
         div.innerHTML = formatText(text);
         messagesEl.appendChild(div);
         messagesEl.scrollTop = messagesEl.scrollHeight;
-        
         return msgId;
     }
 

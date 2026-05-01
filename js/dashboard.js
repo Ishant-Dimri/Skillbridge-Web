@@ -97,25 +97,6 @@ onAuthStateChanged(auth, async (user) => {
   const completed = data.progress || {};
   renderTasks(defaultTasks, completed);
   computePlacementScore(completed);
-  // Add this inside onAuthStateChanged(auth, async (user) => { ... })
-// After computing the placement score:
-
-// Grab the button we just hardcoded in the HTML
-const portfolioBtn = document.getElementById('portfolio-link-btn');
-
-if (portfolioBtn && user) {
-  // This tells the button exactly what to do when clicked
-portfolioBtn.onclick = (event) => {
-    event.preventDefault(); // Stops the '#' from doing anything
-
-    if (user && user.uid) {
-        // Opens the correct link in a new tab securely
-        window.open(`portfolio.html?user=${user.uid}`, '_blank');
-    } else {
-        alert("Still loading your profile... please wait one second and try again!");
-    }
-};
-}
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)
   try {
@@ -256,3 +237,24 @@ export function renderSkillGapAnalyzer(completed) {
   selectEl.addEventListener('change', updateUI);
   updateUI();
 }
+// FAIL-SAFE PORTFOLIO BUTTON LOGIC
+document.addEventListener('DOMContentLoaded', () => {
+    const portfolioBtn = document.getElementById('portfolio-link-btn');
+    
+    if (portfolioBtn) {
+        portfolioBtn.addEventListener('click', (event) => {
+            event.preventDefault(); // Stop the '#' default behavior
+            
+            // Check auth status exactly at the moment of the click
+            const currentUser = auth.currentUser; 
+            
+            if (currentUser && currentUser.uid) {
+                // Open portfolio safely
+                window.open(`portfolio.html?user=${currentUser.uid}`, '_blank');
+            } else {
+                // If they click too fast or aren't logged in
+                alert("Still verifying your login status... please wait one second and try again!");
+            }
+        });
+    }
+});

@@ -29,6 +29,24 @@
       <h1>Skill Tracks</h1>
       <p class="muted">Each track is divided into three progressive levels: Beginner, Intermediate, and Advanced. Each level contains topics, curated resources, and hands-on tasks. Mark topics complete as you progress — your dashboard will reflect the changes and update your placement readiness score.</p>
     </section>
+    <!-- SKILL GAP ANALYZER SECTION -->
+    <section class="gap-analyzer glass" style="margin-bottom: 28px; border-left: 4px solid var(--accent2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div>
+          <h2 style="margin: 0;"><i class="fa-solid fa-magnifying-glass-chart"></i> Skill Gap Analyzer</h2>
+          <p class="muted small" style="margin: 4px 0 0 0;">Compare your progress against industry requirements.</p>
+        </div>
+        <select id="target-role" style="padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-family: inherit;">
+          <option value="" style="color: #000;">-- Select Target Role --</option>
+          <option value="web" style="color: #000;">Full-Stack Web Developer</option>
+          <option value="ai" style="color: #000;">AI / Machine Learning Engineer</option>
+        </select>
+      </div>
+      
+      <!-- Results Container (Hidden until a role is selected) -->
+      <div id="gap-results" class="hidden"></div>
+    </section>
+    <!-- END SKILL GAP ANALYZER -->
 
     <section class="tracks-grid">
       <!-- Web Development Track -->

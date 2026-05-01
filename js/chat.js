@@ -1,7 +1,7 @@
-// chat.js — Global SkillBridge AI Assistant
+// chat.js — Global SkillBridge AI Assistant (Upgraded)
 
-// ⚠️ PASTE YOUR GEMINI API KEY HERE
-const GEMINI_API_KEY = "AIzaSyDF7Oook8g8VOJ84oRiP6mi_bHY1IASxsQ"; 
+// ⚠️ PASTE YOUR REAL GEMINI API KEY HERE
+const GEMINI_API_KEY = "AIzaSyBzLi85KvjcUFzXF9I3QZ75FLbFiOabLZQ"; 
 
 const SYSTEM_PROMPT = `
 You are the official AI Assistant for SkillBridge, a student engineering learning platform.
@@ -14,19 +14,16 @@ Here are the rules and facts you must know:
 Keep answers concise, friendly, and highly encouraging. Use emojis.
 `;
 
-let chatHistory = [
-    { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-    { role: "model", parts: [{ text: "Understood! I am ready to help students across the platform." }] }
-];
-
 // 1. INJECT THE HTML AUTOMATICALLY
 function injectChatUI() {
+    if (document.getElementById('chat-widget')) return;
+
     const chatHTML = `
     <div id="chat-widget" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; font-family: inherit;">
         <button id="chat-fab" class="btn btn-primary" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4); font-size: 24px; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: all 0.3s ease;">
             <i class="fa-solid fa-robot"></i>
         </button>
-        <div id="chat-window" class="glass hidden" style="position: absolute; bottom: 80px; right: 0; width: 360px; height: 500px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(124, 58, 237, 0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.5); transform-origin: bottom right; transition: all 0.3s ease;">
+        <div id="chat-window" class="glass" style="display: none; position: absolute; bottom: 80px; right: 0; width: 360px; height: 500px; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(124, 58, 237, 0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.5); transform-origin: bottom right; transition: all 0.3s ease; background: var(--bg1);">
             <div style="background: linear-gradient(90deg, #7c3aed, #06b6d4); padding: 16px; color: white; display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 16px;"><i class="fa-solid fa-sparkles"></i> SkillBridge Guide</strong>
                 <button id="close-chat" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 18px;"><i class="fa-solid fa-xmark"></i></button>
@@ -46,9 +43,9 @@ function injectChatUI() {
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 }
 
-// 2. INITIALIZE LOGIC
+// 2. INITIALIZE LOGIC & MEMORY
 document.addEventListener('DOMContentLoaded', () => {
-    injectChatUI(); // Draw the UI first
+    injectChatUI(); 
 
     const fab = document.getElementById('chat-fab');
     const windowEl = document.getElementById('chat-window');
@@ -57,17 +54,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEl = document.getElementById('chat-input');
     const messagesEl = document.getElementById('chat-messages');
 
-    // Toggle Window
-    fab.addEventListener('click', () => {
-        windowEl.classList.toggle('hidden');
-        fab.innerHTML = windowEl.classList.contains('hidden') ? '<i class="fa-solid fa-robot"></i>' : '<i class="fa-solid fa-chevron-down"></i>';
-    });
-    closeBtn.addEventListener('click', () => {
-        windowEl.classList.add('hidden');
+    // --- MEMORY SYSTEM ---
+    let chatHistory = JSON.parse(sessionStorage.getItem('sb_chat_history')) || [
+        { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
+        { role: "model", parts: [{ text: "Understood! I am ready." }] }
+    ];
+
+    // Explicitly set initial display
+    if (sessionStorage.getItem('sb_chat_open') === 'true') {
+        windowEl.style.display = 'flex';
+        fab.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+    } else {
+        windowEl.style.display = 'none';
         fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
+    }
+
+    if (chatHistory.length > 2) {
+        for (let i = 2; i < chatHistory.length; i++) {
+            const msg = chatHistory[i];
+            const sender = msg.role === 'user' ? 'user' : 'bot';
+            appendMessage(msg.parts[0].text, sender);
+        }
+    }
+
+    function saveMemory() {
+        sessionStorage.setItem('sb_chat_history', JSON.stringify(chatHistory));
+    }
+
+    // --- BULLETPROOF TOGGLE LOGIC ---
+    fab.addEventListener('click', () => {
+        if (windowEl.style.display === 'none') {
+            windowEl.style.display = 'flex'; // Open
+            fab.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+            sessionStorage.setItem('sb_chat_open', 'true');
+        } else {
+            windowEl.style.display = 'none'; // Close
+            fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
+            sessionStorage.setItem('sb_chat_open', 'false');
+        }
     });
 
-    // Send logic
+    closeBtn.addEventListener('click', () => {
+        windowEl.style.display = 'none'; // Force Close
+        fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
+        sessionStorage.setItem('sb_chat_open', 'false');
+    });
+
+    // --- SEND LOGIC & SMART ERROR HANDLING ---
     sendBtn.addEventListener('click', handleSend);
     inputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
 
@@ -77,7 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         appendMessage(text, 'user');
         inputEl.value = '';
+        
         chatHistory.push({ role: "user", parts: [{ text: text }] });
+        saveMemory(); 
 
         const typingId = appendMessage("Thinking...", 'bot');
 
@@ -87,16 +122,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: chatHistory })
             });
+            
             const data = await response.json();
-            const botReply = data.candidates[0].content.parts[0].text;
 
+            // Did Google reject the request? If so, throw the exact error.
+            if (!response.ok) {
+                console.error("Google API Error:", data);
+                throw new Error(data.error?.message || "Unknown Google API Error");
+            }
+
+            const botReply = data.candidates[0].content.parts[0].text;
             chatHistory.push({ role: "model", parts: [{ text: botReply }] });
+            saveMemory(); 
+
             document.getElementById(typingId).innerHTML = formatText(botReply);
             messagesEl.scrollTop = messagesEl.scrollHeight;
 
         } catch (error) {
-            console.error(error);
-            document.getElementById(typingId).innerText = "Oops! Connection error. Check your API key.";
+            console.error("Full Error:", error);
+            // Print the ACTUAL error directly into the chat bubble!
+            document.getElementById(typingId).innerHTML = `<strong>Error:</strong> ${error.message}`;
         }
     }
 

@@ -51,18 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEl = document.getElementById('chat-input');
     const messagesEl = document.getElementById('chat-messages');
 
-    // Load Memory safely
     let chatHistory = JSON.parse(sessionStorage.getItem('sb_history')) || [];
     let isOpen = sessionStorage.getItem('sb_open') === 'true';
 
-    // Init UI State
     windowEl.style.display = isOpen ? 'flex' : 'none';
     fab.innerHTML = isOpen ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-robot"></i>';
 
-    // Render old messages
     chatHistory.forEach(msg => appendMessage(msg.parts[0].text, msg.role === 'user' ? 'user' : 'bot'));
 
-    // Toggle Button Logic (Fixed)
     fab.addEventListener('click', () => {
         isOpen = !isOpen;
         windowEl.style.display = isOpen ? 'flex' : 'none';
@@ -70,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('sb_open', isOpen);
     });
 
-    // "X" Close Button Logic (Fixed)
     closeBtn.addEventListener('click', () => {
         isOpen = false;
         windowEl.style.display = 'none';
@@ -78,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('sb_open', 'false');
     });
 
-    // Send Logic
     sendBtn.addEventListener('click', handleSend);
     inputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
 
@@ -93,11 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingId = appendMessage("Thinking...", 'bot');
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, // The camelCase fix!
                     contents: chatHistory 
                 })
             });
@@ -105,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (!response.ok) {
-                chatHistory.pop(); // Remove the failed message from memory
+                chatHistory.pop(); // Clean up corrupted turns
                 throw new Error(data.error?.message || "Google API Error");
             }
 
@@ -120,11 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(error);
             document.getElementById(typingId).innerHTML = `<strong style="color: #ef4444;">Error:</strong> ${error.message}`;
             
-            // If the key is totally broken, wipe the corrupted memory so it can try fresh next time
-            if (error.message.includes("API key not valid")) {
-                sessionStorage.removeItem('sb_history');
-                chatHistory = [];
-            }
+            // Auto-wipe the corrupted memory so it can try fresh on the next message
+            sessionStorage.removeItem('sb_history');
+            chatHistory = [];
         }
     }
 

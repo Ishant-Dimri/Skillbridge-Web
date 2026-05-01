@@ -109,7 +109,7 @@ if (portfolioBtn && user) {
     const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
     
     // Attach the user's unique ID to the button
-    portfolioBtn.href = `${baseUrl}/portfolio.html?user=${user.uid}`;
+    portfolioBtn.href = `${baseUrl}/portfolio.html?uid=${user.uid}`;
 }
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)

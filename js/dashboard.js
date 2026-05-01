@@ -100,20 +100,16 @@ onAuthStateChanged(auth, async (user) => {
   // Add this inside onAuthStateChanged(auth, async (user) => { ... })
 // After computing the placement score:
 
-const shareContainer = document.getElementById('share-profile-container');
-if (shareContainer && user) {
-  const profileUrl = `${window.location.origin}/portfolio.html?user=${user.uid}`;
-  shareContainer.innerHTML = `
-    <div class="glass" style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <h4 style="margin: 0;">Public Portfolio Link</h4>
-        <p class="muted small" style="margin: 0;">Share this with recruiters.</p>
-      </div>
-      <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${profileUrl}'); alert('Link Copied!');">
-        Copy Link
-      </button>
-    </div>
-  `;
+// Grab the button we just hardcoded in the HTML
+const portfolioBtn = document.getElementById('portfolio-link-btn');
+
+if (portfolioBtn && user) {
+    // This safely calculates your website address, ensuring it works perfectly on GitHub Pages
+    const currentUrl = window.location.href;
+    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+    
+    // Attach the user's unique ID to the button
+    portfolioBtn.href = `${baseUrl}/portfolio.html?user=${user.uid}`;
 }
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)

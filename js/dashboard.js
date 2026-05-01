@@ -237,24 +237,18 @@ export function renderSkillGapAnalyzer(completed) {
   selectEl.addEventListener('change', updateUI);
   updateUI();
 }
-// FAIL-SAFE PORTFOLIO BUTTON LOGIC
+// THE ALERT TEST
 document.addEventListener('DOMContentLoaded', () => {
     const portfolioBtn = document.getElementById('portfolio-link-btn');
     
     if (portfolioBtn) {
         portfolioBtn.addEventListener('click', (event) => {
-            event.preventDefault(); // Stop the '#' default behavior
-            
-            // Check auth status exactly at the moment of the click
-            const currentUser = auth.currentUser; 
-            
-            if (currentUser && currentUser.uid) {
-                // Open portfolio safely
-                window.open(`portfolio.html?user=${currentUser.uid}`, '_blank');
-            } else {
-                // If they click too fast or aren't logged in
-                alert("Still verifying your login status... please wait one second and try again!");
-            }
+            event.preventDefault(); 
+            alert("The button is successfully wired to the JavaScript!");
+            console.log("Current User Status:", auth.currentUser);
         });
+    } else {
+        console.error("JavaScript cannot find the button ID!");
     }
 });
+

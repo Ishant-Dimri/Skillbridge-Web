@@ -97,6 +97,24 @@ onAuthStateChanged(auth, async (user) => {
   const completed = data.progress || {};
   renderTasks(defaultTasks, completed);
   computePlacementScore(completed);
+  // Add this inside onAuthStateChanged(auth, async (user) => { ... })
+// After computing the placement score:
+
+const shareContainer = document.getElementById('share-profile-container');
+if (shareContainer && user) {
+  const profileUrl = `${window.location.origin}/portfolio.html?user=${user.uid}`;
+  shareContainer.innerHTML = `
+    <div class="glass" style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h4 style="margin: 0;">Public Portfolio Link</h4>
+        <p class="muted small" style="margin: 0;">Share this with recruiters.</p>
+      </div>
+      <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${profileUrl}'); alert('Link Copied!');">
+        Copy Link
+      </button>
+    </div>
+  `;
+}
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)
   try {

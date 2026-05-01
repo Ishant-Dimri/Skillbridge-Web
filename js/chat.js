@@ -1,4 +1,4 @@
-// chat.js — Global SkillBridge AI Assistant (With Memory)
+// chat.js — Global SkillBridge AI Assistant
 
 // ⚠️ PASTE YOUR GEMINI API KEY HERE
 const GEMINI_API_KEY = "AIzaSyDF7Oook8g8VOJ84oRiP6mi_bHY1IASxsQ"; 
@@ -14,17 +14,19 @@ Here are the rules and facts you must know:
 Keep answers concise, friendly, and highly encouraging. Use emojis.
 `;
 
+let chatHistory = [
+    { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
+    { role: "model", parts: [{ text: "Understood! I am ready to help students across the platform." }] }
+];
+
 // 1. INJECT THE HTML AUTOMATICALLY
 function injectChatUI() {
-    // If it's already there, don't inject it again
-    if (document.getElementById('chat-widget')) return;
-
     const chatHTML = `
     <div id="chat-widget" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; font-family: inherit;">
         <button id="chat-fab" class="btn btn-primary" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4); font-size: 24px; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: all 0.3s ease;">
             <i class="fa-solid fa-robot"></i>
         </button>
-        <div id="chat-window" class="glass hidden" style="position: absolute; bottom: 80px; right: 0; width: 360px; height: 500px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(124, 58, 237, 0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.5); transform-origin: bottom right; transition: all 0.3s ease; background: var(--bg1);">
+        <div id="chat-window" class="glass hidden" style="position: absolute; bottom: 80px; right: 0; width: 360px; height: 500px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(124, 58, 237, 0.3); box-shadow: 0 12px 40px rgba(0,0,0,0.5); transform-origin: bottom right; transition: all 0.3s ease;">
             <div style="background: linear-gradient(90deg, #7c3aed, #06b6d4); padding: 16px; color: white; display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 16px;"><i class="fa-solid fa-sparkles"></i> SkillBridge Guide</strong>
                 <button id="close-chat" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 18px;"><i class="fa-solid fa-xmark"></i></button>
@@ -44,9 +46,9 @@ function injectChatUI() {
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 }
 
-// 2. INITIALIZE LOGIC & MEMORY
+// 2. INITIALIZE LOGIC
 document.addEventListener('DOMContentLoaded', () => {
-    injectChatUI(); 
+    injectChatUI(); // Draw the UI first
 
     const fab = document.getElementById('chat-fab');
     const windowEl = document.getElementById('chat-window');
@@ -55,44 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEl = document.getElementById('chat-input');
     const messagesEl = document.getElementById('chat-messages');
 
-    // --- MEMORY SYSTEM ---
-    // Load history from session storage, or start fresh
-    let chatHistory = JSON.parse(sessionStorage.getItem('sb_chat_history')) || [
-        { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-        { role: "model", parts: [{ text: "Understood! I am ready." }] }
-    ];
-
-    // Load window state (was it open on the last page?)
-    if (sessionStorage.getItem('sb_chat_open') === 'true') {
-        windowEl.classList.remove('hidden');
-        fab.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-    }
-
-    // Render old messages if they exist
-    if (chatHistory.length > 2) {
-        for (let i = 2; i < chatHistory.length; i++) {
-            const msg = chatHistory[i];
-            const sender = msg.role === 'user' ? 'user' : 'bot';
-            appendMessage(msg.parts[0].text, sender);
-        }
-    }
-
-    function saveMemory() {
-        sessionStorage.setItem('sb_chat_history', JSON.stringify(chatHistory));
-    }
-    // ---------------------
-
-    // Toggle Window & Save State
+    // Toggle Window
     fab.addEventListener('click', () => {
-        const isHidden = windowEl.classList.toggle('hidden');
-        fab.innerHTML = isHidden ? '<i class="fa-solid fa-robot"></i>' : '<i class="fa-solid fa-chevron-down"></i>';
-        sessionStorage.setItem('sb_chat_open', !isHidden);
+        windowEl.classList.toggle('hidden');
+        fab.innerHTML = windowEl.classList.contains('hidden') ? '<i class="fa-solid fa-robot"></i>' : '<i class="fa-solid fa-chevron-down"></i>';
     });
-
     closeBtn.addEventListener('click', () => {
         windowEl.classList.add('hidden');
         fab.innerHTML = '<i class="fa-solid fa-robot"></i>';
-        sessionStorage.setItem('sb_chat_open', 'false');
     });
 
     // Send logic
@@ -105,9 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         appendMessage(text, 'user');
         inputEl.value = '';
-        
         chatHistory.push({ role: "user", parts: [{ text: text }] });
-        saveMemory(); // Save immediately
 
         const typingId = appendMessage("Thinking...", 'bot');
 
@@ -121,8 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const botReply = data.candidates[0].content.parts[0].text;
 
             chatHistory.push({ role: "model", parts: [{ text: botReply }] });
-            saveMemory(); // Save the bot's reply
-
             document.getElementById(typingId).innerHTML = formatText(botReply);
             messagesEl.scrollTop = messagesEl.scrollHeight;
 

@@ -29,8 +29,17 @@
       <div class="welcome-left">
         <h2 id="welcome-user">Welcome, Learner</h2>
         <p class="muted">Your personal progress timeline and placement readiness dashboard. Use this space to track weekly tasks, projects, and milestones.</p>
-              <!-- The Share Portfolio feature will render inside this div -->
-<div id="share-profile-container" style="margin-top: 24px;"></div>
+ <!-- HARDCODED PUBLIC PORTFOLIO BOX -->
+<div class="glass" style="margin-top: 24px; padding: 16px; border: 1px solid rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h4 style="margin: 0; color: #10b981;"><i class="fa-solid fa-link"></i> Public Portfolio Link</h4>
+            <p class="muted small" style="margin: 4px 0 0 0;">Share your verified profile with recruiters.</p>
+        </div>
+        <!-- This button starts empty, and our JS will fill in the link -->
+        <a id="portfolio-link-btn" href="#" target="_blank" class="btn btn-primary btn-sm">View My Portfolio</a>
+    </div>
+</div>
       </div>
 
       <div class="welcome-right">

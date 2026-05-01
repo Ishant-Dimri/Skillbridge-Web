@@ -6,12 +6,13 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCg4AaOf-fYGxNdhJVH4avHcosfVOw9vpk",
+  authDomain: "skillbridge-94a17.firebaseapp.com",
+  projectId: "skillbridge-94a17",
+  storageBucket: "skillbridge-94a17.firebasestorage.app",
+  messagingSenderId: "385458072778",
+  appId: "1:385458072778:web:39d836ac674610fcab9833",
+  measurementId: "G-QMSQYV2JN8"
 };
 
 const app = initializeApp(firebaseConfig);

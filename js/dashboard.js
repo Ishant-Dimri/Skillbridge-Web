@@ -97,6 +97,17 @@ onAuthStateChanged(auth, async (user) => {
   const completed = data.progress || {};
   renderTasks(defaultTasks, completed);
   computePlacementScore(completed);
+  // Grab the button
+const portfolioBtn = document.getElementById('portfolio-link-btn');
+
+if (portfolioBtn && user) {
+    portfolioBtn.onclick = (event) => {
+        event.preventDefault(); // Stop the '#' from jumping the page
+        
+        // Open the portfolio in a new tab with your exact ID!
+        window.open(`portfolio.html?user=${user.uid}`, '_blank');
+    };
+}
   renderSkillGapAnalyzer(completed); // <--- ADD THIS LINE
   // fetch projects (simple Firestore query)
   try {
@@ -237,18 +248,5 @@ export function renderSkillGapAnalyzer(completed) {
   selectEl.addEventListener('change', updateUI);
   updateUI();
 }
-// THE ALERT TEST
-document.addEventListener('DOMContentLoaded', () => {
-    const portfolioBtn = document.getElementById('portfolio-link-btn');
-    
-    if (portfolioBtn) {
-        portfolioBtn.addEventListener('click', (event) => {
-            event.preventDefault(); 
-            alert("The button is successfully wired to the JavaScript!");
-            console.log("Current User Status:", auth.currentUser);
-        });
-    } else {
-        console.error("JavaScript cannot find the button ID!");
-    }
-});
+
 

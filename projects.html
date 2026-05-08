@@ -23,12 +23,40 @@
     </div>
   </header>
 
-  <main class="container projects-page">
-    <section class="intro glass">
-      <h1>Project Showcase</h1>
-      <p class="muted">Browse projects across engineering branches. Use the filters to explore domain-specific work — each card includes a description, tech stack, and links to code or demos.</p>
-      <button id="btn-open-post" class="btn btn-primary" style="margin-top: 15px;">+ Post a New Project</button>
+<main class="container projects-page">
+  <section class="intro glass">
+    <h1>Project Showcase</h1>
+    <p class="muted">Browse projects across engineering branches or find active teams to join.</p>
+    <button id="btn-open-post" class="btn btn-primary" style="margin-top: 15px;">+ Post a New Project</button>
+  </section>
+
+  <div class="tabs-container glass" style="display: flex; gap: 15px; padding: 15px; margin: 20px 0; border-radius: 12px; justify-content: center;">
+    <button id="tab-ongoing" class="btn btn-primary" style="width: 200px;">Ongoing Projects</button>
+    <button id="tab-completed" class="btn btn-ghost" style="width: 200px;">Completed Showcase</button>
+  </div>
+
+  <div id="section-ongoing">
+    <section id="ongoing-projects-container" class="projects-grid container">
+      <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
+        <p class="muted">Loading active collaborations...</p>
+      </div>
     </section>
+  </div>
+
+  <div id="section-completed" style="display: none;">
+    
+    <section class="filters glass">
+      <div class="filter-row" id="filter-row">
+        <button class="btn btn-sm active" data-filter="all">All</button>
+        <button class="btn btn-sm" data-filter="web">Web</button>
+        </div>
+    </section>
+
+    <section id="projects-container" class="projects-grid container">
+      </section>
+
+  </div>
+</main>
 
     <section class="filters glass">
       <div class="filter-row" id="filter-row">

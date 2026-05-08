@@ -65,3 +65,47 @@
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>
+<div class="mentor-dashboard" style="display: flex; gap: 20px;">
+    
+    <div class="mentee-list-container" style="flex: 1; border-right: 1px solid #ccc; padding-right: 15px;">
+        <h2>My Students</h2>
+        <div id="mentee-list">
+            <p>Loading your students...</p>
+        </div>
+    </div>
+
+    <div id="review-panel" style="flex: 2; display: none;">
+        <h2 id="review-student-name">Student Name</h2>
+        
+        <div class="student-stats" style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h4>Completed Roadmap Modules: <span id="review-roadmap">0</span>%</h4>
+            <h4>Submitted Projects:</h4>
+            <ul id="review-projects-list"></ul>
+        </div>
+
+        <h3>Rate Project Quality</h3>
+        <form id="mentor-review-form" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="hidden" id="review-student-id">
+            
+            <div>
+                <label style="font-weight: bold;">Referral Readiness:</label>
+                <select id="review-rating" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <option value="" disabled selected>Select a rating...</option>
+                    <option value="ready">🟢 Ready for Referral (Green)</option>
+                    <option value="needs_improvement">🟡 Needs Improvement (Yellow)</option>
+                    <option value="not_ready">🔴 Not Ready Yet (Red)</option>
+                </select>
+            </div>
+
+            <div>
+                <label style="font-weight: bold;">Improvement Feedback:</label>
+                <textarea id="review-feedback" rows="4" placeholder="Detail what they did well and what needs work before a referral..." required style="width: 100%; padding: 8px; margin-top: 5px;"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Official Review</button>
+        </form>
+        <p id="review-status-msg" style="margin-top: 10px;"></p>
+    </div>
+</div>
+
+<script type="module" src="js/admin.js"></script>

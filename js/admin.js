@@ -1,6 +1,6 @@
 // js/admin.js
 import { db, auth } from './firebase.js'; 
-import { collection, addDoc, query, where, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"; 
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"; 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 // Wait for the HTML to fully load before running scripts
@@ -67,34 +67,41 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loadMentees(user.uid);
+            loadAlumni(user.uid); // Load the alumni portal too!
         } else {
-            if (menteeListDiv) {
-                menteeListDiv.innerHTML = "<p class='muted'>Please log in to view your students.</p>";
-            }
+            if (menteeListDiv) menteeListDiv.innerHTML = "<p class='muted'>Please log in to view your students.</p>";
+            const alumniListDiv = document.getElementById('alumni-list');
+            if (alumniListDiv) alumniListDiv.innerHTML = "<p class='muted'>Please log in.</p>";
         }
     });
 
-    // Fetch Students Assigned to this Mentor
+    // Fetch Active Students Assigned to this Mentor
     async function loadMentees(mentorUid) {
         if (!menteeListDiv) return;
 
         try {
             const usersRef = collection(db, "users");
-            // Find students who have this user set as their mentor
-            const q = query(usersRef, where("mentorId", "==", mentorUid));
+            // Find students who have this user set as their mentor (and are not alumni yet)
+            const q = query(
+                usersRef, 
+                where("mentorId", "==", mentorUid)
+            );
+            
             const snapshot = await getDocs(q);
-
             menteeListDiv.innerHTML = ""; // Clear loading text
 
-            if (snapshot.empty) {
-                menteeListDiv.innerHTML = "<p class='muted'>You have no students assigned to you yet. (Add 'mentorId' in Firebase to test!)</p>";
-                return;
-            }
+            // Filter out alumni on the client side just for the active list, or show all
+            let activeCount = 0;
 
             snapshot.forEach(doc => {
                 const student = doc.data();
                 const studentId = doc.id;
                 
+                // If they are an alumni, skip them here (they belong in the alumni section)
+                if (student.status === "alumni") return; 
+                
+                activeCount++;
+
                 // Determine current status indicator
                 let statusDot = "⚪"; 
                 if (student.mentorRating === "ready") statusDot = "🟢";
@@ -102,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (student.mentorRating === "not_ready") statusDot = "🔴";
 
                 const btn = document.createElement('button');
-                btn.className = "btn btn-ghost"; // Matches your dark theme
+                btn.className = "btn btn-ghost"; 
                 btn.innerHTML = `${statusDot} ${student.name || "Unnamed Student"}`;
                 btn.style.cssText = "display: block; width: 100%; text-align: left; margin-bottom: 8px;";
                 
@@ -110,6 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.onclick = () => openReviewPanel(studentId, student);
                 menteeListDiv.appendChild(btn);
             });
+
+            if (activeCount === 0) {
+                menteeListDiv.innerHTML = "<p class='muted'>You have no active students assigned to you right now.</p>";
+            }
+
         } catch (error) {
             console.error("Error loading mentees:", error);
             if (menteeListDiv) menteeListDiv.innerHTML = "<p style='color: red;'>Error loading students.</p>";
@@ -148,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const feedback = document.getElementById('review-feedback').value;
 
             try {
-                statusMsg.style.color = "#8a2be2"; // Purple loading color
+                statusMsg.style.color = "#8a2be2"; 
                 statusMsg.innerText = "Submitting review...";
 
                 // Update the specific student's document in Firestore
@@ -159,10 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     lastReviewedAt: serverTimestamp()
                 });
 
-                statusMsg.style.color = "#4CAF50"; // Green success color
+                statusMsg.style.color = "#4CAF50"; 
                 statusMsg.innerText = "✅ Review saved successfully!";
                 
-                // Reload the list to update the colored dots!
+                // Reload the active list to update the colored dots
                 loadMentees(auth.currentUser.uid);
 
             } catch (error) {
@@ -172,4 +184,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ==========================================
+    // 4. Top Alumni Portal Logic
+    // ==========================================
+    async function loadAlumni(mentorUid) {
+        const alumniListDiv = document.getElementById('alumni-list');
+        if (!alumniListDiv) return;
+
+        try {
+            const usersRef = collection(db, "users");
+            
+            // Query: Only this mentor's students + Only 'alumni' + Sorted by Score & Projects
+            const q = query(
+                usersRef,
+                where("mentorId", "==", mentorUid),
+                where("status", "==", "alumni"),
+                orderBy("readinessScore", "desc"),
+                orderBy("projectCount", "desc")
+            );
+            
+            const snapshot = await getDocs(q);
+            alumniListDiv.innerHTML = ""; 
+
+            if (snapshot.empty) {
+                alumniListDiv.innerHTML = "<p class='muted'>You have no graduated alumni yet. Grade some students to 'Ready' to build your network!</p>";
+                return;
+            }
+
+            // Render the Alumni Cards
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const card = document.createElement('div');
+                card.className = "glass"; 
+                card.style.cssText = "padding: 15px; border-radius: 8px; border-left: 4px solid #8a2be2;";
+                
+                card.innerHTML = `
+                    <h4 style="margin: 0 0 10px 0; color: white;">${data.name || "Anonymous Alumni"}</h4>
+                    <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #ccc;">
+                        <span>🔥 Readiness: <strong style="color: #4CAF50;">${data.readinessScore || 0}</strong></span>
+                        <span>📁 Projects: <strong style="color: #4CAF50;">${data.projectCount || 0}</strong></span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        ${data.linkedIn 
+                            ? `<a href="${data.linkedIn}" target="_blank" style="color: #8a2be2; text-decoration: none; font-weight: bold;">🔗 Connect on LinkedIn</a>` 
+                            : '<span class="muted" style="font-size: 0.8rem;">No contact info provided</span>'}
+                    </div>
+                `;
+                alumniListDiv.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error("Error loading alumni:", error);
+            alumniListDiv.innerHTML = "<p style='color: #f44336;'>⚠️ Firebase Index Required. Please check your F12 Browser Console for the link to build the index.</p>";
+        }
+    }
+
 });

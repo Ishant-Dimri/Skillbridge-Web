@@ -42,6 +42,18 @@ const dummyProjectsData = [
     link: "#"
   }
 ];
+const dummyCertificatesData = [
+  {
+    platform: "Udemy",
+    courseName: "Machine Learning A-Z: AI, Python & R",
+    link: "#"
+  },
+  {
+    platform: "Coursera",
+    courseName: "Google Data Analytics Professional Certificate",
+    link: "#"
+  }
+];
 // 🌟 ------------------- 🌟
 
 document.addEventListener('DOMContentLoaded', async () => {

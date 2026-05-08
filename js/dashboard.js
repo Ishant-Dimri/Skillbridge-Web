@@ -1,6 +1,7 @@
 // dashboard.js — Populate dashboard data, compute progress and placement score
 // Requires firebase.js and auth.js to be loaded
-
+import { collection, query, where, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+// (Keep whatever other imports you already have like getDoc, etc.)
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
@@ -89,7 +90,7 @@ function renderProjectsPreview(projects) {
 }
 
 // Load user data and projects
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user) => {window.fetchMyProjectApplications(user.uid);}
   if (!user) return;
   const userRef = doc(db, 'users', user.uid);
   const snap = await getDoc(userRef);
@@ -248,5 +249,107 @@ export function renderSkillGapAnalyzer(completed) {
   selectEl.addEventListener('change', updateUI);
   updateUI();
 }
+// ==========================================
+// PEER-TO-PEER: Review Blind Auditions
+// ==========================================
+const appsContainer = document.getElementById('my-applications-list');
 
+// We will call this function inside your existing onAuthStateChanged block!
+window.fetchMyProjectApplications = async function(userUid) {
+    if (!appsContainer) return;
+    appsContainer.innerHTML = "<p>Scanning for your projects...</p>";
+    
+    try {
+        // Find projects created by this specific user
+        const qProjects = query(collection(db, "projects"), where("ownerId", "==", userUid));
+        const projectsSnap = await getDocs(qProjects);
+        
+        const projectMap = {}; // Store { projectId: "Project Title" }
+        projectsSnap.forEach(doc => { projectMap[doc.id] = doc.data().title; });
+
+        if (Object.keys(projectMap).length === 0) {
+            appsContainer.innerHTML = "<p class='muted'>You haven't posted any projects looking for teammates yet.</p>";
+            return;
+        }
+
+        // Find applications that belong to this user's projects
+        appsContainer.innerHTML = ""; 
+        let foundApps = false;
+
+        for (const projectId of Object.keys(projectMap)) {
+            const qApps = query(collection(db, "applications"), where("projectId", "==", projectId));
+            const appsSnap = await getDocs(qApps);
+
+            appsSnap.forEach(appDoc => {
+                foundApps = true;
+                renderApplicationCard(appDoc.id, appDoc.data(), projectMap[projectId]);
+            });
+        }
+
+        if (!foundApps) {
+            appsContainer.innerHTML = "<p class='muted'>No applications received yet. Check back later!</p>";
+        }
+
+    } catch (error) {
+        console.error("Error fetching applications:", error);
+        appsContainer.innerHTML = "<p style='color:red;'>Failed to load applications.</p>";
+    }
+}
+
+function renderApplicationCard(appId, appData, projectTitle) {
+    const card = document.createElement('div');
+    card.className = "application-card glass"; // Reusing your glass style!
+    card.style.padding = "20px";
+    card.style.borderRadius = "8px";
+    card.style.border = "1px solid rgba(255,255,255,0.1)";
+
+    const isPending = appData.status === "pending";
+    const displayName = isPending ? "🕵️ Anonymous Candidate" : `✅ ${appData.applicantName}`;
+    const badgeColor = isPending ? "#ff9800" : "#4caf50";
+    const badgeText = isPending ? "Awaiting Review" : "Accepted";
+
+    card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">
+            <h4 style="margin:0;">${displayName}</h4>
+            <span style="background: ${badgeColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">${badgeText}</span>
+        </div>
+        <p class="muted small" style="margin-bottom: 10px;">Applying for: <strong>${projectTitle}</strong></p>
+        
+        <p><strong>Branch:</strong> ${appData.branch}</p>
+        <p><strong>Skills:</strong> ${appData.skills.join(', ')}</p>
+        <p><strong>Pitch:</strong> "${appData.pitch}"</p>
+        
+        <div style="margin-top: 15px;">
+            ${isPending 
+                ? `<button class="btn btn-primary btn-sm accept-btn">Accept Candidate</button>` 
+                : `<p style="color: #4caf50; font-weight: bold;">Identity revealed! You can now contact this teammate.</p>`
+            }
+        </div>
+    `;
+
+    if (isPending) {
+        card.querySelector('.accept-btn').addEventListener('click', () => acceptTeammate(appId, appData.projectId));
+    }
+
+    appsContainer.appendChild(card);
+}
+
+async function acceptTeammate(appId, projectId) {
+    if (!confirm("Accept this teammate? This will reveal their identity and take up a spot in your project.")) return;
+
+    try {
+        await updateDoc(doc(db, "applications", appId), { status: "accepted" });
+        await updateDoc(doc(db, "projects", projectId), { filledSpots: increment(1) });
+        
+        alert("Teammate accepted! Identity revealed.");
+        
+        // Refresh the list
+        const user = auth.currentUser;
+        if (user) window.fetchMyProjectApplications(user.uid);
+
+    } catch (error) {
+        console.error("Error accepting teammate:", error);
+        alert("Something went wrong.");
+    }
+}
 

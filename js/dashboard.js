@@ -353,3 +353,18 @@ async function acceptTeammate(appId, projectId) {
     }
 }
 
+
+
+// Inside dashboard.js where you fetch user data:
+if (data.mentorRating) {
+    let alertColor = data.mentorRating === "ready" ? "green" : (data.mentorRating === "needs_improvement" ? "orange" : "red");
+    let alertText = data.mentorRating === "ready" ? "🟢 Approved for Referral!" : "Review Feedback Available";
+    
+    // Show a box on their dashboard
+    document.getElementById('mentor-feedback-box').innerHTML = `
+        <div style="border: 2px solid ${alertColor}; padding: 15px; border-radius: 8px;">
+            <h4 style="color: ${alertColor};">${alertText}</h4>
+            <p><strong>Feedback:</strong> "${data.mentorFeedback}"</p>
+        </div>
+    `;
+}

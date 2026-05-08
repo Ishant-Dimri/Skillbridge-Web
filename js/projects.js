@@ -180,48 +180,16 @@ function showDetailsInline(card, project) {
 
 function escapeHtml(str = '') { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function truncate(s, n) { return s && s.length > n ? s.slice(0,n-1) + '…' : s || ''; }
-
 // ======= INIT & UI LOGIC =======
 document.addEventListener('DOMContentLoaded', () => {
-  // Grab the elements
-const tabOngoing = document.getElementById('tab-ongoing');
-const tabCompleted = document.getElementById('tab-completed');
-const sectionOngoing = document.getElementById('section-ongoing');
-const sectionCompleted = document.getElementById('section-completed');
-
-// Logic for clicking "Ongoing Projects"
-tabOngoing.addEventListener('click', () => {
-    // 1. Swap button styles (Active = primary, Inactive = ghost)
-    tabOngoing.className = "btn btn-primary";
-    tabCompleted.className = "btn btn-ghost";
-    
-    // 2. Show Ongoing, Hide Completed
-    sectionOngoing.style.display = "block";
-    sectionCompleted.style.display = "none";
-});
-
-// Logic for clicking "Completed Showcase"
-tabCompleted.addEventListener('click', () => {
-    // 1. Swap button styles
-    tabCompleted.className = "btn btn-primary";
-    tabOngoing.className = "btn btn-ghost";
-    
-    // 2. Show Completed, Hide Ongoing
-    sectionCompleted.style.display = "block";
-    sectionOngoing.style.display = "none";
-});
-    
-  // 1. Fetch both lists
-  fetchAndRenderOngoing();
-  fetchAndRenderCompleted();
-
-  // 2. Tab Switching Logic
+  // 1. Grab the elements ONCE
   const tabOngoing = document.getElementById('tab-ongoing');
   const tabCompleted = document.getElementById('tab-completed');
   const sectionOngoing = document.getElementById('section-ongoing');
   const sectionCompleted = document.getElementById('section-completed');
 
-  if (tabOngoing && tabCompleted) {
+  // 2. Tab Switching Logic
+  if (tabOngoing && tabCompleted && sectionOngoing && sectionCompleted) {
       tabOngoing.addEventListener('click', () => {
           tabOngoing.className = "btn btn-primary";
           tabCompleted.className = "btn btn-ghost";
@@ -236,8 +204,12 @@ tabCompleted.addEventListener('click', () => {
           sectionOngoing.style.display = "none";
       });
   }
+    
+  // 3. Fetch both lists on load
+  fetchAndRenderOngoing();
+  fetchAndRenderCompleted();
 
-  // 3. Filter Buttons Logic (applies to the Completed Showcase)
+  // 4. Filter Buttons Logic (applies to the Completed Showcase)
   document.querySelectorAll('.filter-row [data-filter]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-row [data-filter]').forEach(b => b.classList.remove('active'));
@@ -246,20 +218,23 @@ tabCompleted.addEventListener('click', () => {
     });
   });
 
-  // 4. Modal Logic
+  // 5. Modal Logic
   const modalPost = document.getElementById('modal-post');
   const modalApply = document.getElementById('modal-apply');
   
   if (modalPost) {
-      document.getElementById('btn-open-post').addEventListener('click', () => modalPost.style.display = 'flex');
-      document.getElementById('close-post').addEventListener('click', () => modalPost.style.display = 'none');
+      const btnOpenPost = document.getElementById('btn-open-post');
+      const btnClosePost = document.getElementById('close-post');
+      if (btnOpenPost) btnOpenPost.addEventListener('click', () => modalPost.style.display = 'flex');
+      if (btnClosePost) btnClosePost.addEventListener('click', () => modalPost.style.display = 'none');
   }
   
   if (modalApply) {
-      document.getElementById('close-apply').addEventListener('click', () => modalApply.style.display = 'none');
+      const btnCloseApply = document.getElementById('close-apply');
+      if (btnCloseApply) btnCloseApply.addEventListener('click', () => modalApply.style.display = 'none');
   }
 
-  // 5. Handle Posting a Project
+  // 6. Handle Posting a Project
   const formPostProject = document.getElementById('form-post-project');
   if (formPostProject) {
       formPostProject.addEventListener('submit', async (e) => {
@@ -270,7 +245,7 @@ tabCompleted.addEventListener('click', () => {
           try {
               await addDoc(collection(db, "projects"), {
                   ownerId: user.uid,
-                  ownerName: user.displayName || "SkillBridge Learner", // Now tracking the owner!
+                  ownerName: user.displayName || "SkillBridge Learner",
                   title: document.getElementById('post-title').value,
                   tech: document.getElementById('post-skills').value.split(',').map(s => s.trim()),
                   category: document.getElementById('post-category').value,
@@ -280,7 +255,7 @@ tabCompleted.addEventListener('click', () => {
                   createdAt: serverTimestamp()
               });
               alert("Project posted successfully!");
-              modalPost.style.display = 'none';
+              if (modalPost) modalPost.style.display = 'none';
               e.target.reset();
               fetchAndRenderOngoing(); // Refresh without reloading page
           } catch (err) {
@@ -290,7 +265,7 @@ tabCompleted.addEventListener('click', () => {
       });
   }
 
-  // 6. Handle Applying (Blind Audition)
+  // 7. Handle Applying (Blind Audition)
   const formApply = document.getElementById('form-apply');
   if (formApply) {
       formApply.addEventListener('submit', async (e) => {
@@ -310,7 +285,7 @@ tabCompleted.addEventListener('click', () => {
                   appliedAt: serverTimestamp()
               });
               alert("Application submitted anonymously! Good luck.");
-              modalApply.style.display = 'none';
+              if (modalApply) modalApply.style.display = 'none';
               e.target.reset();
           } catch (err) {
               console.error("Error applying:", err);

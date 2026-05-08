@@ -2,9 +2,11 @@
 // Text-only project renderer with Firestore fallback and robust checks.
 // This file is an ES module and expects to be loaded with type="module".
 
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const { db } = window.fb || { db: null };
+const auth = getAuth(); // Need auth to know who is posting/applying
 
 // ======= SAMPLE PROJECTS =======
 // Text-only entries. Add or edit items here.
@@ -151,17 +153,30 @@ function renderCards(projects = []) {
     card.dataset.category = (p.category || 'web').toLowerCase();
 
     // Text-only card markup
+   // Text-only card markup with new Apply functionality
     card.innerHTML = `
       <div class="project-body">
         <h4>${escapeHtml(p.title)}</h4>
         <p class="muted">${escapeHtml(truncate(p.description, 220))}</p>
         <div class="meta" style="margin-top:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="tech" style="font-size:0.9rem;color:var(--muted)">${escapeHtml((p.tech || []).join('; '))}</span>
-          <a class="btn btn-sm btn-primary" href="${p.link || '#'}" target="_blank" rel="noopener">View</a>
+          
+          ${p.id ? `<button class="btn btn-sm btn-primary apply-btn" data-id="${p.id}">Apply Anonymously</button>` : ''}
+          
+          <a class="btn btn-sm btn-ghost" href="${p.link || '#'}" target="_blank" rel="noopener">View</a>
           <button class="btn btn-sm btn-ghost details-btn">Details</button>
         </div>
       </div>
     `;
+
+    // Add listener for the Apply button
+    const applyBtn = card.querySelector('.apply-btn');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', () => {
+            document.getElementById('apply-project-id').value = p.id; // Store ID in hidden input
+            document.getElementById('modal-apply').style.display = 'flex'; // Open modal
+        });
+    }
 
     // Details button opens a simple inline details panel
     const detailsBtn = card.querySelector('.details-btn');
@@ -233,4 +248,73 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Fetch and render
   const projects = await fetchProjects();
   renderCards(projects);
+});
+// ======= MODAL & BLIND AUDITION LOGIC =======
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Modal Selectors
+    const modalPost = document.getElementById('modal-post');
+    const modalApply = document.getElementById('modal-apply');
+    
+    // Open Post Modal
+    document.getElementById('btn-open-post').addEventListener('click', () => {
+        modalPost.style.display = 'flex';
+    });
+
+    // Close Modals
+    document.getElementById('close-post').addEventListener('click', () => modalPost.style.display = 'none');
+    document.getElementById('close-apply').addEventListener('click', () => modalApply.style.display = 'none');
+
+    // Handle Posting a Project
+    document.getElementById('form-post-project').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return alert("You must be logged in to post a project!");
+
+        try {
+            await addDoc(collection(db, "projects"), {
+                ownerId: user.uid,
+                title: document.getElementById('post-title').value,
+                tech: document.getElementById('post-skills').value.split(',').map(s => s.trim()),
+                category: document.getElementById('post-category').value,
+                totalSpots: parseInt(document.getElementById('post-spots').value),
+                filledSpots: 0,
+                status: "Open",
+                createdAt: serverTimestamp()
+            });
+            alert("Project posted successfully!");
+            modalPost.style.display = 'none';
+            e.target.reset();
+            location.reload(); // Quick refresh to show new project
+        } catch (err) {
+            console.error("Error posting:", err);
+            alert("Failed to post project.");
+        }
+    });
+
+    // Handle Applying to a Project (Blind Audition)
+    document.getElementById('form-apply').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return alert("You must be logged in to apply!");
+
+        try {
+            await addDoc(collection(db, "applications"), {
+                projectId: document.getElementById('apply-project-id').value,
+                applicantUid: user.uid,
+                applicantName: user.displayName || "SkillBridge User", // Stored but hidden from owner
+                branch: document.getElementById('apply-branch').value,
+                skills: document.getElementById('apply-skills').value.split(',').map(s => s.trim()),
+                pitch: document.getElementById('apply-pitch').value,
+                status: "pending",
+                appliedAt: serverTimestamp()
+            });
+            alert("Application submitted anonymously! Good luck.");
+            modalApply.style.display = 'none';
+            e.target.reset();
+        } catch (err) {
+            console.error("Error applying:", err);
+            alert("Failed to submit application.");
+        }
+    });
 });

@@ -27,6 +27,7 @@
     <section class="intro glass">
       <h1>Project Showcase</h1>
       <p class="muted">Browse projects across engineering branches. Use the filters to explore domain-specific work — each card includes a description, tech stack, and links to code or demos.</p>
+      <button id="btn-open-post" class="btn btn-primary" style="margin-top: 15px;">+ Post a New Project</button>
     </section>
 
     <section class="filters glass">
@@ -68,6 +69,41 @@
     </footer>
   </main>
 <!-- Standard Module Loading -->
+  <div id="modal-post" class="modal-overlay" style="display: none;">
+    <div class="modal-content glass">
+      <span class="close-modal" id="close-post">&times;</span>
+      <h2>Post a New Project</h2>
+      <p class="muted small">Find the best talent blindly based on skills.</p>
+      
+      <form id="form-post-project" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+        <input type="text" id="post-title" placeholder="Project Title (e.g., React Frontend Dev)" required class="form-control">
+        <input type="text" id="post-skills" placeholder="Required Skills (e.g., React, CSS, Node)" required class="form-control">
+        <select id="post-category" required class="form-control">
+          <option value="web">Web</option>
+          <option value="ai">AI</option>
+          <option value="mobile">Mobile</option>
+          <option value="datascience">Data Science</option>
+        </select>
+        <input type="number" id="post-spots" min="1" max="10" placeholder="Total Spots Available" required class="form-control">
+        <button type="submit" class="btn btn-primary">Publish Project</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-apply" class="modal-overlay" style="display: none;">
+    <div class="modal-content glass">
+      <span class="close-modal" id="close-apply">&times;</span>
+      <h2>Apply Anonymously</h2>
+      <p class="muted small">Your name will be hidden from the owner until accepted.</p>
+      
+      <form id="form-apply" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+        <input type="hidden" id="apply-project-id"> <input type="text" id="apply-branch" placeholder="Your Branch (e.g., Computer Science)" required class="form-control">
+        <input type="text" id="apply-skills" placeholder="Your Skills (e.g., JS, React, Firebase)" required class="form-control">
+        <textarea id="apply-pitch" placeholder="Why are you a good fit for this project?" rows="4" required class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+      </form>
+    </div>
+  </div>
 <script type="module" src="js/firebase.js"></script>
 <script type="module" src="js/projects.js"></script>
 <script src="js/chat.js"></script>

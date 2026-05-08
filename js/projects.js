@@ -183,6 +183,33 @@ function truncate(s, n) { return s && s.length > n ? s.slice(0,n-1) + '…' : s 
 
 // ======= INIT & UI LOGIC =======
 document.addEventListener('DOMContentLoaded', () => {
+  // Grab the elements
+const tabOngoing = document.getElementById('tab-ongoing');
+const tabCompleted = document.getElementById('tab-completed');
+const sectionOngoing = document.getElementById('section-ongoing');
+const sectionCompleted = document.getElementById('section-completed');
+
+// Logic for clicking "Ongoing Projects"
+tabOngoing.addEventListener('click', () => {
+    // 1. Swap button styles (Active = primary, Inactive = ghost)
+    tabOngoing.className = "btn btn-primary";
+    tabCompleted.className = "btn btn-ghost";
+    
+    // 2. Show Ongoing, Hide Completed
+    sectionOngoing.style.display = "block";
+    sectionCompleted.style.display = "none";
+});
+
+// Logic for clicking "Completed Showcase"
+tabCompleted.addEventListener('click', () => {
+    // 1. Swap button styles
+    tabCompleted.className = "btn btn-primary";
+    tabOngoing.className = "btn btn-ghost";
+    
+    // 2. Show Completed, Hide Ongoing
+    sectionCompleted.style.display = "block";
+    sectionOngoing.style.display = "none";
+});
     
   // 1. Fetch both lists
   fetchAndRenderOngoing();

@@ -14,9 +14,9 @@ const skillLabels = {
 
 // 🌟 --- DUMMY DATA --- 🌟
 const dummyUserData = {
-  name: "Ishant Dimri",
+  name: "Piyush",
   email: "contact@ishantdimri.com",
-  placementScore: 92,
+  placementScore: 85,
   progress: {
     html: true, css: true, js: true, react: true, api: true, deploy: true, models: true
   }

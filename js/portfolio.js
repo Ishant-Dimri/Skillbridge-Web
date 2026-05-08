@@ -54,6 +54,28 @@ const dummyCertificatesData = [
     link: "#"
   }
 ];
+// 3.5 Populate Dummy Certificates
+      const certsContainer = document.getElementById('user-certificates');
+      certsContainer.innerHTML = ""; 
+
+      if (dummyCertificatesData.length > 0) {
+        dummyCertificatesData.forEach((cert) => {
+          certsContainer.innerHTML += `
+            <div style="border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); border-radius: 8px; padding: 16px; display: flex; align-items: center; gap: 16px;">
+              <div style="background: rgba(59, 130, 246, 0.2); padding: 12px; border-radius: 8px;">
+                <i class="fa-solid fa-award" style="color: #3b82f6; font-size: 20px;"></i>
+              </div>
+              <div style="flex-grow: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 15px; color: #fff;">${cert.courseName}</h4>
+                <p style="margin: 0; font-size: 13px; color: #94a3b8;">${cert.platform} • Verified Proof</p>
+              </div>
+              <a href="${cert.link}" target="_blank" class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;">View</a>
+            </div>
+          `;
+        });
+      } else {
+        certsContainer.innerHTML = '<p class="muted small">No external credentials verified yet.</p>';
+      }
 // 🌟 ------------------- 🌟
 
 document.addEventListener('DOMContentLoaded', async () => {

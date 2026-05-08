@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loadMentees(user.uid);
-            loadAlumni(user.uid); // Load the alumni portal too!
+            loadAlumni(user.uid); // Load the completed students list too!
         } else {
             if (menteeListDiv) menteeListDiv.innerHTML = "<p class='muted'>Please log in to view your students.</p>";
             const alumniListDiv = document.getElementById('alumni-list');
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const usersRef = collection(db, "users");
-            // Find students who have this user set as their mentor (and are not alumni yet)
+            // Find students who have this user set as their mentor
             const q = query(
                 usersRef, 
                 where("mentorId", "==", mentorUid)
@@ -90,14 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const snapshot = await getDocs(q);
             menteeListDiv.innerHTML = ""; // Clear loading text
 
-            // Filter out alumni on the client side just for the active list, or show all
+            // We only want to show students who are NOT alumni yet in this specific list
             let activeCount = 0;
 
             snapshot.forEach(doc => {
                 const student = doc.data();
                 const studentId = doc.id;
                 
-                // If they are an alumni, skip them here (they belong in the alumni section)
+                // If they are finished with the course, skip them (they go to the other list)
                 if (student.status === "alumni") return; 
                 
                 activeCount++;
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error loading mentees:", error);
-            if (menteeListDiv) menteeListDiv.innerHTML = "<p style='color: red;'>Error loading students.</p>";
+            if (menteeListDiv) menteeListDiv.innerHTML = "<p style='color: red;'>Error loading active students.</p>";
         }
     }
 
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusMsg.style.color = "#4CAF50"; 
                 statusMsg.innerText = "✅ Review saved successfully!";
                 
-                // Reload the active list to update the colored dots
+                // Reload the active list to update the colored dots!
                 loadMentees(auth.currentUser.uid);
 
             } catch (error) {
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 4. Top Alumni Portal Logic
+    // 4. Placement Ready Students Logic
     // ==========================================
     async function loadAlumni(mentorUid) {
         const alumniListDiv = document.getElementById('alumni-list');
@@ -195,11 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const usersRef = collection(db, "users");
             
-            // Query: Only this mentor's students + Only 'alumni' + Sorted by Score & Projects
+            // Query: Only this mentor's students + Only completed ('alumni') + Sorted by Score & Projects
             const q = query(
                 usersRef,
                 where("mentorId", "==", mentorUid),
-                where("status", "==", "alumni"),
+                where("status", "==", "alumni"), // Keeping the database status as 'alumni'
                 orderBy("readinessScore", "desc"),
                 orderBy("projectCount", "desc")
             );
@@ -208,11 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             alumniListDiv.innerHTML = ""; 
 
             if (snapshot.empty) {
-                alumniListDiv.innerHTML = "<p class='muted'>You have no graduated alumni yet. Grade some students to 'Ready' to build your network!</p>";
+                alumniListDiv.innerHTML = "<p class='muted'>No students have completed the course under your mentorship yet.</p>";
                 return;
             }
 
-            // Render the Alumni Cards
+            // Render the Completed Student Cards
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const card = document.createElement('div');
@@ -220,14 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.cssText = "padding: 15px; border-radius: 8px; border-left: 4px solid #8a2be2;";
                 
                 card.innerHTML = `
-                    <h4 style="margin: 0 0 10px 0; color: white;">${data.name || "Anonymous Alumni"}</h4>
+                    <h4 style="margin: 0 0 10px 0; color: white;">${data.name || "Anonymous Student"}</h4>
                     <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #ccc;">
                         <span>🔥 Readiness: <strong style="color: #4CAF50;">${data.readinessScore || 0}</strong></span>
                         <span>📁 Projects: <strong style="color: #4CAF50;">${data.projectCount || 0}</strong></span>
                     </div>
                     <div style="margin-top: 10px;">
                         ${data.linkedIn 
-                            ? `<a href="${data.linkedIn}" target="_blank" style="color: #8a2be2; text-decoration: none; font-weight: bold;">🔗 Connect on LinkedIn</a>` 
+                            ? `<a href="${data.linkedIn}" target="_blank" style="color: #8a2be2; text-decoration: none; font-weight: bold;">🔗 Review LinkedIn Profile</a>` 
                             : '<span class="muted" style="font-size: 0.8rem;">No contact info provided</span>'}
                     </div>
                 `;
@@ -235,8 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } catch (error) {
-            console.error("Error loading alumni:", error);
-            alumniListDiv.innerHTML = "<p style='color: #f44336;'>⚠️ Firebase Index Required. Please check your F12 Browser Console for the link to build the index.</p>";
+            console.error("Error loading completed students:", error);
+            // This error message handles the crucial Firebase Index step!
+            alumniListDiv.innerHTML = "<p style='color: #f44336;'>⚠️ Firebase Index Required. Please check your F12 Browser Console for the direct link to build the sorting index.</p>";
         }
     }
 

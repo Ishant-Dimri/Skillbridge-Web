@@ -234,3 +234,82 @@ body{
   background: rgba(0, 0, 0, 0.2);
   color: #fff;
 }
+/* Admin Dashboard Grid Layout */
+.admin-grid {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 30px;
+  align-items: start;
+  margin-top: 20px;
+}
+
+.admin-side {
+  padding: 20px;
+  position: sticky;
+  top: 90px;
+  border-radius: 12px;
+}
+
+.admin-side ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.admin-side a {
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.admin-side a:hover {
+  color: #fff;
+}
+
+.admin-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-card {
+  padding: 25px;
+  border-radius: 12px;
+}
+
+/* Blind Audition Application Cards */
+.application-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: transform 0.2s ease;
+}
+
+.application-card:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.badge.pending { background: #ff9800; color: #fff; }
+.badge.accepted { background: #4caf50; color: #fff; }

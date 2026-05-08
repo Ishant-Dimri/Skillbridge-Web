@@ -1,6 +1,8 @@
 // js/portfolio.js
-import { app, db } from './firebase.js';
-import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+// 🛑 FIREBASE COMMENTED OUT FOR DUMMY DEMO 🛑
+// import { app, db } from './firebase.js';
+// import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 // Dictionary to convert raw skill IDs to readable tags
 const skillLabels = {
@@ -10,86 +12,102 @@ const skillLabels = {
   python: 'Python', data: 'Data Analysis', models: 'ML Models', nn: 'Neural Networks'
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Extract User ID from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get('user');
+// 🌟 --- DUMMY DATA --- 🌟
+const dummyUserData = {
+  name: "Ishant Dimri",
+  email: "contact@ishantdimri.com",
+  placementScore: 92,
+  progress: {
+    html: true, css: true, js: true, react: true, api: true, deploy: true, models: true
+  }
+};
 
+const dummyProjectsData = [
+  {
+    title: "SkillBridge Progress Engine",
+    description: "A dynamic algorithm that calculates placement readiness based on completed tasks, featuring a 5% progress decay logic to ensure active knowledge retention.",
+    tech: ["JavaScript", "Firebase", "React"],
+    link: "#"
+  },
+  {
+    title: "Autonomous Line-Following Robot",
+    description: "Hardware integration and PID tuning for an autonomous line-following robot utilizing an Arduino Nano, L298N motor drivers, and N20 motors for precise movement.",
+    tech: ["C++", "Arduino", "Embedded Systems"],
+    link: "#"
+  },
+  {
+    title: "Watch Brand E-Commerce Platform",
+    description: "A complete digital storefront and marketing pipeline built for a premium watch brand, including social media integration.",
+    tech: ["HTML/CSS", "JavaScript", "UI/UX"],
+    link: "#"
+  }
+];
+// 🌟 ------------------- 🌟
+
+document.addEventListener('DOMContentLoaded', async () => {
   const loadingState = document.getElementById('loading-state');
   const profileContent = document.getElementById('profile-content');
 
-  if (!userId) {
-    loadingState.innerHTML = `<h2 style="color:#ef4444;">Invalid Profile Link</h2>`;
-    return;
-  }
-
   try {
-    // 2. Fetch User Data
-    const userRef = doc(db, 'users', userId);
-    const userSnap = await getDoc(userRef);
+    // Simulate a network request taking 800ms to show off the loading state
+    setTimeout(() => {
+      
+      // 1. Populate Header & Score
+      document.getElementById('user-name').innerText = dummyUserData.name;
+      document.getElementById('contact-btn').href = `mailto:${dummyUserData.email}`;
+      
+      const score = dummyUserData.placementScore;
+      document.getElementById('user-score').innerText = `${score}%`;
+      
+      // Animate the progress bar fill
+      setTimeout(() => {
+        document.getElementById('score-fill').style.width = `${score}%`;
+        document.getElementById('score-fill').style.transition = "width 1s ease-in-out";
+      }, 100);
 
-    if (!userSnap.exists()) {
-      loadingState.innerHTML = `<h2 style="color:#ef4444;">Candidate Not Found</h2>`;
-      return;
-    }
+      // 2. Populate Skills from 'progress' object
+      const skillsContainer = document.getElementById('user-skills');
+      const completedProgress = dummyUserData.progress;
+      let skillCount = 0;
 
-    const userData = userSnap.data();
-
-    // 3. Populate Header & Score
-    document.getElementById('user-name').innerText = userData.name || userData.email || 'SkillBridge Candidate';
-    document.getElementById('contact-btn').href = `mailto:${userData.email || ''}`;
-    
-    const score = userData.placementScore || 0;
-    document.getElementById('user-score').innerText = `${score}%`;
-    document.getElementById('score-fill').style.width = `${score}%`;
-
-    // 4. Populate Skills from 'progress' object
-    const skillsContainer = document.getElementById('user-skills');
-    const completedProgress = userData.progress || {};
-    let skillCount = 0;
-
-    for (const [key, isCompleted] of Object.entries(completedProgress)) {
-      if (isCompleted && skillLabels[key]) {
-        skillsContainer.innerHTML += `
-          <span style="background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); color: #a78bfa; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">
-            ${skillLabels[key]}
-          </span>`;
-        skillCount++;
+      for (const [key, isCompleted] of Object.entries(completedProgress)) {
+        if (isCompleted && skillLabels[key]) {
+          skillsContainer.innerHTML += `
+            <span style="background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); color: #a78bfa; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+              ${skillLabels[key]}
+            </span>`;
+          skillCount++;
+        }
       }
-    }
-    
-    if (skillCount === 0) {
-      skillsContainer.innerHTML = '<span class="muted small">Currently building foundational skills...</span>';
-    }
+      
+      if (skillCount === 0) {
+        skillsContainer.innerHTML = '<span class="muted small">Currently building foundational skills...</span>';
+      }
 
-    // 5. Fetch User's Specific Projects
-    const projectsContainer = document.getElementById('user-projects');
-    const q = query(collection(db, 'projects'), where('authorId', '==', userId));
-    const querySnapshot = await getDocs(q);
+      // 3. Populate Projects
+      const projectsContainer = document.getElementById('user-projects');
+      projectsContainer.innerHTML = ""; // clear existing
 
-    if (querySnapshot.empty) {
-      projectsContainer.innerHTML = '<div class="glass" style="grid-column:1/-1; padding:18px; text-align:center;"><p class="muted">No public projects uploaded yet.</p></div>';
-    } else {
-      querySnapshot.forEach((doc) => {
-        const p = doc.data();
+      dummyProjectsData.forEach((p) => {
         projectsContainer.innerHTML += `
-          <div class="project-card glass">
+          <div class="project-card glass" style="padding: 20px; border-radius: 12px; margin-bottom: 16px;">
             <div class="project-body">
-              <h4>${p.title || 'Untitled'}</h4>
-              <p class="muted small">${(p.description || '').substring(0, 150)}...</p>
-              <div class="meta" style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <span class="tech" style="font-size:0.8rem; color:var(--accent2);">${(p.tech || []).join(' • ')}</span>
+              <h4 style="margin-top: 0; margin-bottom: 8px;">${p.title}</h4>
+              <p class="muted small" style="line-height: 1.5; margin-bottom: 16px;">${p.description}</p>
+              <div class="meta" style="margin-bottom: 16px; display:flex; gap:8px; flex-wrap:wrap;">
+                ${p.tech.map(t => `<span class="tech" style="font-size:0.8rem; background: rgba(16, 185, 129, 0.1); color:#10b981; padding: 4px 8px; border-radius: 4px;">${t}</span>`).join('')}
               </div>
-              <a class="btn btn-sm btn-outline" style="margin-top: 12px; width: 100%; justify-content: center;" href="${p.link || '#'}" target="_blank">View Code / Demo</a>
+              <a class="btn btn-sm btn-outline" style="display: block; text-align: center; text-decoration: none; padding: 8px; border: 1px solid #4f46e5; color: #4f46e5; border-radius: 6px;" href="${p.link}" target="_blank">View Code / Demo</a>
             </div>
           </div>
         `;
       });
-    }
 
-    // Hide loading, show profile
-    loadingState.classList.add('hidden');
-    profileContent.classList.remove('hidden');
+      // 4. Hide loading, show profile
+      loadingState.classList.add('hidden');
+      profileContent.classList.remove('hidden');
+
+    }, 800); // End of simulated delay
 
   } catch (error) {
     console.error("Error loading profile:", error);

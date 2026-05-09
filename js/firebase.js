@@ -1,11 +1,10 @@
-// Use the modular v9 CDN imports (only once per module)
+// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCg4AaOf-fYGxNdhJVH4avHcosfVOw9vpk",
   authDomain: "skillbridge-94a17.firebaseapp.com",
@@ -17,14 +16,10 @@ const firebaseConfig = {
   measurementId: "G-QMSQYV2JN8"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize services
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// Example usage
-// auth, db, storage, analytics are ready to use
+// Export these so other modules can import them
+export const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);

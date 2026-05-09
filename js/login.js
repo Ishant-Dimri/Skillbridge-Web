@@ -1,8 +1,8 @@
-// js/admin.js
+// js/login.js
 
-// 🛑 FIREBASE IMPORTS (Commented out for Hackathon Dummy Demo) 🛑
-// import { auth, db } from './firebase.js'; 
-// import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+// 🛑 FIREBASE IMPORTS (Commented out for Dummy Demo) 🛑
+// import { auth } from './firebase.js'; 
+// import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('real-login-form');
@@ -12,61 +12,57 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // 1. Capture user inputs from the form
+            // Capture inputs
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            const role = document.getElementById('user-role').value; // Captures 'admin', 'student', or 'alumni'
+            const role = document.getElementById('user-role').value; // Get selected role
 
-            // 2. Validate that a role was selected
             if (!role) {
-                showError("Please select your access role.");
+                showError("Please select a role to continue.");
                 return;
             }
 
-            // 3. UI Feedback: Show the user that authentication is happening
+            // --- SIMULATED LOGIN LOGIC ---
+            console.log(`Attempting login for: ${email} as ${role}`);
+            
+            // Show loading state on button
             const loginBtn = document.getElementById('login-btn');
             const originalText = loginBtn.innerText;
-            loginBtn.innerText = "Verifying Credentials...";
+            loginBtn.innerText = "Authenticating...";
             loginBtn.disabled = true;
 
-            // 4. Simulated Backend Logic (Hackathon Speed Setup)
-            // Replace this block with real Firebase Auth when ready to go live
+            // Simulate network delay
             setTimeout(() => {
+                // For the Hackathon demo, we accept any credentials
                 if (email && password) {
-                    console.log(`Login successful: Redirecting ${email} as ${role}`);
+                    console.log("Login Successful (Simulated)");
                     
-                    // 5. Role-Based Routing Logic
+                    // REDIRECTION LOGIC BASED ON ROLE
                     if (role === 'admin') {
-                        // Admins go to the project management/mentor panel
                         window.location.href = 'admin.html';
                     } else if (role === 'student') {
-                        // Students go to their learning dashboard
                         window.location.href = 'dashboard.html';
                     } else if (role === 'alumni') {
-                        // Alumni/Recruiters go to the verified talent pool
                         window.location.href = 'talent.html';
                     }
                 } else {
-                    showError("Invalid email or password. Please try again.");
+                    showError("Invalid email or password.");
                     loginBtn.innerText = originalText;
                     loginBtn.disabled = false;
                 }
-            }, 1200);
+            }, 1000);
         });
     }
 
-    /**
-     * Helper function to display professional error messages
-     */
     function showError(message) {
         if (loginError) {
             loginError.innerText = message;
             loginError.style.display = 'block';
             
-            // Auto-hide error message after a few seconds
+            // Hide error after 3 seconds
             setTimeout(() => {
                 loginError.style.display = 'none';
-            }, 4000);
+            }, 3000);
         }
     }
 });

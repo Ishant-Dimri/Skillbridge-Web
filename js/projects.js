@@ -1,69 +1,107 @@
-// skillbridge/js/projects.js
-// Dual renderer: Live Recruiting Projects (Firestore) + Completed Showcase (Static & Firestore)
+// js/projects.js
+// Dual renderer: Live Recruiting Projects + Completed Showcase (WITH DUMMY DATA & UPVOTES)
 
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const { db } = window.fb || { db: null };
-const auth = getAuth(); // Need auth to know who is posting/applying
+const auth = getAuth();
 
-// ======= SAMPLE PROJECTS (Fallback/Showcase) =======
-const SAMPLE_PROJECTS = [
-  { title: 'Arduino Obstacle Avoiding Car', description: 'A 4WD Arduino-based robot that uses ultrasonic sensors to detect obstacles and navigate autonomously.', tech: ['Arduino','Ultrasonic','L298N','C++'], link: 'https://github.com/your-username/arduino-car', category: 'electrical', details: 'Complete build guide, wiring diagrams, and firmware.' },
-  { title: 'Line Follower Robot LFR', description: 'A line follower robot using IR sensors and PID control for high-speed track following.', tech: ['AVR','IR Sensors','PID'], link: 'https://github.com/your-username/lfr', category: 'electrical', details: 'Includes simulation, hardware BOM, and race performance logs.' },
-  { title: 'Bridge Load Analysis Simulator', description: 'Finite element simulation of bridge loads with visualization and safety factor reports.', tech: ['FEM','Python','Structural'], link: '#', category: 'civil', details: 'Includes load cases, material models, and design recommendations.' },
-  { title: 'Sales Forecast Dashboard', description: 'Time-series forecasting and interactive visualizations built with Plotly.', tech: ['Pandas','Prophet','Plotly'], link: '#', category: 'datascience', details: 'Backtesting results and deployment instructions.' },
-  { title: 'SkillBridge Learning Platform', description: 'A student-focused platform featuring a Skill Gap Analyzer and a unique 5% progress decay system with quiz-based recovery.', tech: ['React', 'Firebase', 'Node.js'], link: '#', category: 'web', details: 'Includes user authentication, dynamic roadmaps, and automated progress tracking.' },
-  { title: 'Piezoelectric Ghost Power Harvester', description: 'Multidisciplinary engineering hardware-simulation hybrid focusing on energy scavenging using piezoelectric systems and digital twins.', tech: ['Arduino', 'Piezo Sensors', 'MATLAB'], link: '#', category: 'electrical', details: 'Simulates energy capture metrics and hardware efficiency in low-power environments.' },
-  { title: 'Campus Resource Coordinator App', description: 'A coordination-based software solution designed to manage and track water and electricity distribution for resource-scarce campus environments.', tech: ['JavaScript', 'Express', 'MongoDB'], link: '#', category: 'environmental', details: 'Replaces assumption of natural water access with a strict digital allocation and tracking system.' },
-  { title: 'Seve Perfume E-Commerce SPA', description: 'A modular, single-page web application featuring dynamic routing for home, contact, and cart sections with localized INR currency formatting.', tech: ['HTML5', 'CSS3', 'Vanilla JS'], link: '#', category: 'web', details: 'Focuses on modern UI/UX design principles and seamless state management without heavy frameworks.' },
-  { title: 'Heart Connect Emotion Engine', description: 'A mobile application architecture focused on emotion-based matching, including comprehensive growth projections and risk assessments.', tech: ['Flutter', 'Firebase Auth', 'Dart'], link: '#', category: 'mobile', details: 'Includes foundational business logic, user flow diagrams, and backend schema planning.' },
-  { title: 'Cinematic 4D Video Generator', description: 'Utilized advanced generative AI models and highly structured prompt engineering to produce 4K cinematic visualizations of the fourth dimension.', tech: ['GenAI Tools', 'Prompt Engineering', 'Video Editing'], link: '#', category: 'ai', details: 'Explores the intersection of generative artificial intelligence and complex theoretical physics visualization.' }
+// ======= 🌟 DUMMY ONGOING PROJECTS (Hiring Room) 🌟 =======
+const DUMMY_ONGOING_PROJECTS = [
+    { id: 'ong_1', title: 'SkillBridge Backend Microservices', ownerName: 'Aman Gupta', tech: ['Node.js', 'Firebase', 'Express'], category: 'web', totalSpots: 3, filledSpots: 1, upvotes: 14 },
+    { id: 'ong_2', title: 'Autonomous Drone Navigation System', ownerName: 'Riya Sharma', tech: ['Python', 'ROS', 'Computer Vision'], category: 'ai', totalSpots: 4, filledSpots: 4, upvotes: 32 }, // Team Full Demo
+    { id: 'ong_3', title: 'Campus Smart Grid IoT Simulator', ownerName: 'Karan Singh', tech: ['Arduino', 'C++', 'MQTT'], category: 'electrical', totalSpots: 2, filledSpots: 0, upvotes: 8 }
 ];
 
-// ======= RENDER ONGOING PROJECTS (Hiring Room) =======
+// ======= 🌟 DUMMY COMPLETED PROJECTS (Showcase) 🌟 =======
+// Added "upvotes" field to your existing array
+const SAMPLE_PROJECTS = [
+  { title: 'Arduino Obstacle Avoiding Car', description: 'A 4WD Arduino-based robot that uses ultrasonic sensors to navigate.', tech: ['Arduino','Ultrasonic','L298N'], link: '#', category: 'electrical', upvotes: 45, details: 'Complete build guide.' },
+  { title: 'Line Follower Robot LFR', description: 'A line follower robot using IR sensors and PID control.', tech: ['AVR','IR Sensors','PID'], link: '#', category: 'electrical', upvotes: 28, details: 'Includes hardware BOM.' },
+  { title: 'Bridge Load Analysis Simulator', description: 'Finite element simulation of bridge loads with visualization.', tech: ['FEM','Python','Structural'], link: '#', category: 'civil', upvotes: 56, details: 'Includes load cases.' },
+  { title: 'Sales Forecast Dashboard', description: 'Time-series forecasting and interactive visualizations.', tech: ['Pandas','Prophet','Plotly'], link: '#', category: 'datascience', upvotes: 89, details: 'Backtesting results included.' },
+  { title: 'SkillBridge Learning Platform', description: 'A student platform featuring a Skill Gap Analyzer and progress decay system.', tech: ['React', 'Firebase', 'Node.js'], link: '#', category: 'web', upvotes: 124, details: 'Dynamic roadmaps included.' },
+  { title: 'Campus Resource Coordinator App', description: 'Software to manage water/electricity distribution for resource-scarce campuses.', tech: ['JS', 'Express', 'MongoDB'], link: '#', category: 'environmental', upvotes: 33, details: 'Strict digital allocation system.' },
+  { title: 'Cinematic 4D Video Generator', description: 'Generative AI models to produce cinematic visualizations of the fourth dimension.', tech: ['GenAI', 'Prompt Engineering'], link: '#', category: 'ai', upvotes: 210, details: 'Complex theoretical physics.' }
+];
+
+// ======= UPVOTE LOGIC =======
+// This function adds a click listener to the heart button
+function attachUpvoteListener(cardElement, initialUpvotes) {
+    const upvoteBtn = cardElement.querySelector('.upvote-btn');
+    const countSpan = upvoteBtn.querySelector('.upvote-count');
+    const icon = upvoteBtn.querySelector('i');
+    
+    let hasUpvoted = false;
+    let currentCount = initialUpvotes || 0;
+
+    upvoteBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevents triggering other card clicks
+        
+        if (!hasUpvoted) {
+            currentCount++;
+            hasUpvoted = true;
+            upvoteBtn.style.color = '#ef4444'; // Make it red/pink
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid'); // Fill the heart
+            icon.classList.add('fa-beat'); // Small animation
+            setTimeout(() => icon.classList.remove('fa-beat'), 500); // remove animation
+        } else {
+            currentCount--;
+            hasUpvoted = false;
+            upvoteBtn.style.color = 'var(--text-muted)'; // Reset color
+            icon.classList.remove('fa-solid');
+            icon.classList.add('fa-regular'); // Empty the heart
+        }
+        countSpan.innerText = currentCount;
+    });
+}
+
+// ======= RENDER ONGOING PROJECTS =======
 async function fetchAndRenderOngoing() {
     const container = document.getElementById('ongoing-projects-container');
-    if (!db || !container) return;
+    if (!container) return;
 
-    try {
-        // QUERY: Fetch ONLY projects marked as "Open"
-        const q = query(collection(db, 'projects'), where("status", "==", "Open"), orderBy('createdAt', 'desc'));
-        const snapshot = await getDocs(q);
-        
+    // Simulate network load
+    setTimeout(() => {
         container.innerHTML = ''; 
 
-        if (snapshot.empty) {
+        if (DUMMY_ONGOING_PROJECTS.length === 0) {
             container.innerHTML = '<div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;"><p class="muted">No active collaborations right now. Be the first to post one!</p></div>';
             return;
         }
 
-        snapshot.forEach(doc => {
-            const p = doc.data();
-            const projectId = doc.id;
-            
+        DUMMY_ONGOING_PROJECTS.forEach(p => {
             const spotsAvailable = p.totalSpots - (p.filledSpots || 0);
             const isFull = spotsAvailable <= 0;
-            const ownerName = p.ownerName || "SkillBridge Learner";
+            const projectId = p.id;
 
             const card = document.createElement('div');
             card.className = 'project-card glass';
             
             card.innerHTML = `
-                <div class="project-body" style="border-top: 3px solid ${isFull ? '#f44336' : '#8a2be2'}; padding-top: 15px;">
+                <div class="project-body" style="border-top: 3px solid ${isFull ? '#ef4444' : 'var(--accent1)'}; padding-top: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                         <h4 style="margin: 0;">${escapeHtml(p.title)}</h4>
-                        <span style="background: ${isFull ? "#f44336" : "#4caf50"}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; white-space: nowrap;">${isFull ? "Team Full" : `${spotsAvailable} Spots Open`}</span>
+                        <span style="background: ${isFull ? "rgba(239, 68, 68, 0.2)" : "rgba(16, 185, 129, 0.2)"}; color: ${isFull ? "#ef4444" : "#10b981"}; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; white-space: nowrap;">${isFull ? "Team Full" : `${spotsAvailable} Spots Open`}</span>
                     </div>
                     
-                    <p class="muted small" style="margin-bottom: 10px;">🛠 <strong>Led by:</strong> ${escapeHtml(ownerName)}</p>
+                    <p class="muted small" style="margin-bottom: 10px;">🛠 <strong>Led by:</strong> ${escapeHtml(p.ownerName)}</p>
                     <p class="muted" style="font-size: 0.9rem;"><strong>Looking for:</strong> ${p.tech ? escapeHtml(p.tech.join(', ')) : 'Various Skills'}</p>
                     
-                    <div class="meta" style="margin-top:15px;display:flex;align-items:center;gap:12px;">
-                        ${!isFull 
-                            ? `<button class="btn btn-sm btn-primary apply-btn" data-id="${projectId}">Apply Anonymously</button>` 
-                            : `<button class="btn btn-sm btn-ghost" disabled style="opacity: 0.5;">Applications Closed</button>`
-                        }
+                    <div class="meta" style="margin-top:15px; display:flex; align-items:center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                        <div>
+                            ${!isFull 
+                                ? `<button class="btn btn-sm btn-primary apply-btn" data-id="${projectId}">Apply</button>` 
+                                : `<button class="btn btn-sm btn-ghost" disabled style="opacity: 0.5;">Closed</button>`
+                            }
+                        </div>
+                        
+                        <!-- THE NEW UPVOTE BUTTON -->
+                        <button class="btn btn-sm btn-ghost upvote-btn" style="color: var(--text-muted); font-size: 14px;">
+                            <i class="fa-regular fa-heart"></i> <span class="upvote-count">${p.upvotes || 0}</span>
+                        </button>
                     </div>
                 </div>
             `;
@@ -76,68 +114,58 @@ async function fetchAndRenderOngoing() {
                 });
             }
 
+            // Attach Upvote Logic
+            attachUpvoteListener(card, p.upvotes);
+
             container.appendChild(card);
         });
-
-    } catch (err) {
-        console.error('Error fetching ongoing projects:', err);
-        container.innerHTML = '<div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;"><p style="color:red;">Error loading active projects. Did you create the Firebase Index?</p></div>';
-    }
+    }, 500);
 }
 
-// ======= RENDER COMPLETED SHOWCASE (Hall of Fame) =======
+// ======= RENDER COMPLETED SHOWCASE =======
 async function fetchAndRenderCompleted() {
     const container = document.getElementById('projects-container');
     if (!container) return;
     
-    const loading = document.getElementById('loading-placeholder');
-    if (loading) loading.remove();
-    container.innerHTML = '';
+    // Simulate network load
+    setTimeout(() => {
+        container.innerHTML = '';
 
-    // 1. Fetch real Firebase projects marked as "Completed"
-    if (db) {
-        try {
-            const q = query(collection(db, 'projects'), where("status", "==", "Completed"), orderBy('createdAt', 'desc'));
-            const snapshot = await getDocs(q);
-            
-            snapshot.forEach(doc => {
-                const p = doc.data();
-                createShowcaseCard(p, container, true);
-            });
-        } catch (err) {
-            console.warn("Error fetching completed projects from Firebase:", err);
-        }
-    }
+        // Render the static SAMPLE_PROJECTS with Dummy Data
+        SAMPLE_PROJECTS.forEach(p => createShowcaseCard(p, container));
 
-    // 2. Render the static SAMPLE_PROJECTS below them
-    SAMPLE_PROJECTS.forEach(p => createShowcaseCard(p, container, false));
-
-    // Apply current filter if any
-    const active = document.querySelector('.filter-row [data-filter].active');
-    const filter = active ? active.dataset.filter : 'all';
-    filterProjects(filter);
+        // Apply current filter if any
+        const active = document.querySelector('.filter-row [data-filter].active');
+        const filter = active ? active.dataset.filter : 'all';
+        filterProjects(filter);
+    }, 500);
 }
 
 // Helper to build the Completed/Showcase Card
-function createShowcaseCard(p, container, isRealDatabaseProject) {
+function createShowcaseCard(p, container) {
     const card = document.createElement('div');
     card.className = 'project-card glass';
     card.dataset.category = (p.category || 'web').toLowerCase();
 
-    // If it's a real completed project from Firebase, show who built it!
-    const ownerInfo = isRealDatabaseProject && p.ownerName 
-        ? `<p class="muted small" style="margin-bottom: 10px;">🏆 <strong>Built by:</strong> ${escapeHtml(p.ownerName)} & Team</p>` 
-        : '';
-
     card.innerHTML = `
       <div class="project-body">
-        <h4>${escapeHtml(p.title)}</h4>
-        ${ownerInfo}
-        <p class="muted" style="margin-top: 10px;">${escapeHtml(truncate(p.description || "A completed SkillBridge project.", 220))}</p>
-        <div class="meta" style="margin-top:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="tech" style="font-size:0.9rem;color:var(--muted)">${escapeHtml((p.tech || []).join('; '))}</span>
-          ${p.link && p.link !== '#' ? `<a class="btn btn-sm btn-ghost" href="${p.link}" target="_blank" rel="noopener">View Code</a>` : ''}
-          <button class="btn btn-sm btn-ghost details-btn">Details</button>
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <h4 style="margin: 0 0 10px 0;">${escapeHtml(p.title)}</h4>
+            <!-- THE NEW UPVOTE BUTTON FOR COMPLETED PROJECTS -->
+            <button class="btn btn-ghost upvote-btn" style="color: var(--text-muted); padding: 0;">
+                <i class="fa-regular fa-heart"></i> <span class="upvote-count" style="font-size: 12px;">${p.upvotes || 0}</span>
+            </button>
+        </div>
+        
+        <p class="muted" style="font-size: 14px; margin-bottom: 12px;">${escapeHtml(truncate(p.description || "", 150))}</p>
+        
+        <div class="meta" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+          ${(p.tech || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('')}
+        </div>
+        
+        <div style="margin-top: 16px; display: flex; gap: 10px;">
+            ${p.link && p.link !== '#' ? `<a class="btn btn-sm btn-outline" href="${p.link}" target="_blank" rel="noopener">Code</a>` : ''}
+            <button class="btn btn-sm btn-outline details-btn">Details</button>
         </div>
       </div>
     `;
@@ -146,6 +174,9 @@ function createShowcaseCard(p, container, isRealDatabaseProject) {
     const detailsBtn = card.querySelector('.details-btn');
     detailsBtn.addEventListener('click', () => showDetailsInline(card, p));
 
+    // Attach Upvote Logic
+    attachUpvoteListener(card, p.upvotes);
+
     container.appendChild(card);
 }
 
@@ -153,7 +184,7 @@ function createShowcaseCard(p, container, isRealDatabaseProject) {
 function filterProjects(filter) {
   const cards = document.querySelectorAll('#projects-container .project-card');
   cards.forEach(c => {
-    if (filter === 'all' || c.dataset.category === filter) c.style.display = '';
+    if (filter === 'all' || c.dataset.category === filter) c.style.display = 'block';
     else c.style.display = 'none';
   });
 }
@@ -166,59 +197,64 @@ function showDetailsInline(card, project) {
     return;
   }
   const details = document.createElement('div');
-  details.className = 'project-details';
+  details.className = 'project-details glass';
   details.style.marginTop = '12px';
+  details.style.padding = '12px';
+  details.style.background = 'rgba(0,0,0,0.2)';
   details.innerHTML = `
-    <div class="glass" style="padding:12px;border-radius:8px">
-      <p>${escapeHtml(project.details || project.description || '')}</p>
-      <p class="muted small">Category: <strong>${escapeHtml(project.category)}</strong></p>
-      <p class="muted small">Tech: <strong>${escapeHtml((project.tech || []).join(', '))}</strong></p>
-    </div>
+      <p style="margin: 0 0 10px 0; font-size: 13px;">${escapeHtml(project.details || project.description || '')}</p>
+      <p class="muted small" style="margin: 0;">Category: <strong>${escapeHtml(project.category)}</strong></p>
   `;
-  card.appendChild(details);
+  card.querySelector('.project-body').appendChild(details);
 }
 
 function escapeHtml(str = '') { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function truncate(s, n) { return s && s.length > n ? s.slice(0,n-1) + '…' : s || ''; }
+
 // ======= INIT & UI LOGIC =======
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Grab the elements ONCE
   const tabOngoing = document.getElementById('tab-ongoing');
   const tabCompleted = document.getElementById('tab-completed');
   const sectionOngoing = document.getElementById('section-ongoing');
   const sectionCompleted = document.getElementById('section-completed');
 
-  // 2. Tab Switching Logic
+  // Tab Switching Logic
   if (tabOngoing && tabCompleted && sectionOngoing && sectionCompleted) {
       tabOngoing.addEventListener('click', () => {
           tabOngoing.className = "btn btn-primary";
-          tabCompleted.className = "btn btn-ghost";
+          tabCompleted.className = "btn btn-outline"; // Changed to outline for better UI
           sectionOngoing.style.display = "block";
           sectionCompleted.style.display = "none";
       });
 
       tabCompleted.addEventListener('click', () => {
           tabCompleted.className = "btn btn-primary";
-          tabOngoing.className = "btn btn-ghost";
+          tabOngoing.className = "btn btn-outline";
           sectionCompleted.style.display = "block";
           sectionOngoing.style.display = "none";
       });
   }
     
-  // 3. Fetch both lists on load
+  // Fetch both lists on load
   fetchAndRenderOngoing();
   fetchAndRenderCompleted();
 
-  // 4. Filter Buttons Logic (applies to the Completed Showcase)
+  // Filter Buttons Logic 
   document.querySelectorAll('.filter-row [data-filter]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-row [data-filter]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-row [data-filter]').forEach(b => {
+          b.classList.remove('active');
+          b.classList.remove('btn-primary');
+          b.classList.add('btn-outline');
+      });
       btn.classList.add('active');
+      btn.classList.remove('btn-outline');
+      btn.classList.add('btn-primary'); // Highlight selected filter
       filterProjects(btn.dataset.filter);
     });
   });
 
-  // 5. Modal Logic
+  // Modal Logic
   const modalPost = document.getElementById('modal-post');
   const modalApply = document.getElementById('modal-apply');
   
@@ -234,63 +270,41 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnCloseApply) btnCloseApply.addEventListener('click', () => modalApply.style.display = 'none');
   }
 
-  // 6. Handle Posting a Project
+  // Handle Posting a Project (Simulated for Dummy Mode)
   const formPostProject = document.getElementById('form-post-project');
   if (formPostProject) {
       formPostProject.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const user = auth.currentUser;
-          if (!user) return alert("You must be logged in to post a project!");
+          const btn = formPostProject.querySelector('button');
+          btn.innerText = "Publishing...";
+          btn.disabled = true;
 
-          try {
-              await addDoc(collection(db, "projects"), {
-                  ownerId: user.uid,
-                  ownerName: user.displayName || "SkillBridge Learner",
-                  title: document.getElementById('post-title').value,
-                  tech: document.getElementById('post-skills').value.split(',').map(s => s.trim()),
-                  category: document.getElementById('post-category').value,
-                  totalSpots: parseInt(document.getElementById('post-spots').value),
-                  filledSpots: 0,
-                  status: "Open",
-                  createdAt: serverTimestamp()
-              });
-              alert("Project posted successfully!");
+          setTimeout(() => {
+              alert("DUMMY SUCCESS: Project posted successfully!");
               if (modalPost) modalPost.style.display = 'none';
               e.target.reset();
-              fetchAndRenderOngoing(); // Refresh without reloading page
-          } catch (err) {
-              console.error("Error posting:", err);
-              alert("Failed to post project.");
-          }
+              btn.innerText = "Publish Project";
+              btn.disabled = false;
+          }, 800);
       });
   }
 
-  // 7. Handle Applying (Blind Audition)
+  // Handle Applying (Simulated for Dummy Mode)
   const formApply = document.getElementById('form-apply');
   if (formApply) {
       formApply.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const user = auth.currentUser;
-          if (!user) return alert("You must be logged in to apply!");
+          const btn = formApply.querySelector('button');
+          btn.innerText = "Submitting...";
+          btn.disabled = true;
 
-          try {
-              await addDoc(collection(db, "applications"), {
-                  projectId: document.getElementById('apply-project-id').value,
-                  applicantUid: user.uid,
-                  applicantName: user.displayName || "SkillBridge User",
-                  branch: document.getElementById('apply-branch').value,
-                  skills: document.getElementById('apply-skills').value.split(',').map(s => s.trim()),
-                  pitch: document.getElementById('apply-pitch').value,
-                  status: "pending",
-                  appliedAt: serverTimestamp()
-              });
-              alert("Application submitted anonymously! Good luck.");
+          setTimeout(() => {
+              alert("DUMMY SUCCESS: Application submitted anonymously! Good luck.");
               if (modalApply) modalApply.style.display = 'none';
               e.target.reset();
-          } catch (err) {
-              console.error("Error applying:", err);
-              alert("Failed to submit application.");
-          }
+              btn.innerText = "Submit Application";
+              btn.disabled = false;
+          }, 800);
       });
   }
 });

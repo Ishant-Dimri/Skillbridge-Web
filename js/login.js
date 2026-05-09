@@ -1,59 +1,63 @@
-// js/nav.js
-import { auth, db } from './firebase.js';
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+// login.js
+import { auth } from './firebase.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    const studentLinks = document.querySelectorAll('.nav-student');
-    const recruiterLinks = document.querySelectorAll('.nav-recruiter');
-    const adminLinks = document.querySelectorAll('.nav-admin');
-    const authBtn = document.getElementById('nav-auth-btn');
+  const loginForm = document.getElementById('login-form');
+  const loginBtn = document.getElementById('login-submit');
+  const loginError = document.getElementById('login-error');
 
-    // Real-Time Firebase Auth Listener
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // User is logged in! Fetch their role.
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            let role = "student"; // Default fallback
-            
-            if (userDoc.exists()) {
-                role = userDoc.data().role;
-            }
+  if (!loginForm) return;
 
-            // Update Auth Button to Logout
-            authBtn.innerText = `Logout`;
-            authBtn.classList.remove('btn-outline');
-            authBtn.classList.add('btn-ghost');
-            authBtn.href = "#"; 
-            
-            // Handle Real Logout
-            authBtn.onclick = (e) => {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    window.location.href = 'index.html';
-                });
-            };
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            // Unhide correct links based on real database role
-            if (role === 'student') {
-                studentLinks.forEach(link => link.style.display = 'inline-block');
-            } else if (role === 'recruiter') {
-                recruiterLinks.forEach(link => link.style.display = 'inline-block');
-            } else if (role === 'admin' || role === 'mentor') {
-                adminLinks.forEach(link => link.style.display = 'inline-block');
-                recruiterLinks.forEach(link => link.style.display = 'inline-block'); 
-            }
+    const email = (loginForm['email']?.value || '').trim();
+    const password = loginForm['password']?.value || '';
 
-        } else {
-            // User is logged out. Keep UI locked down.
-            studentLinks.forEach(link => link.style.display = 'none');
-            recruiterLinks.forEach(link => link.style.display = 'none');
-            adminLinks.forEach(link => link.style.display = 'none');
-            
-            authBtn.innerText = "Login";
-            authBtn.href = "login.html";
-            authBtn.classList.add('btn-outline');
-            authBtn.classList.remove('btn-ghost');
+    if (!email || !password) {
+      if (loginError) loginError.textContent = 'Please enter both email and password.';
+      return;
+    }
+
+    loginBtn.disabled = true;
+    const prevText = loginBtn.textContent;
+    loginBtn.textContent = 'Signing in...';
+    if (loginError) loginError.textContent = '';
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged in nav.js will update nav UI to Logout automatically
+      // Redirect to dashboard or desired page after successful sign-in
+      window.location.href = './dashboard.html';
+    } catch (err) {
+      console.error('Login failed:', err);
+      let message = 'Login failed. Please try again.';
+      if (err?.code) {
+        switch (err.code) {
+          case 'auth/invalid-email':
+            message = 'Invalid email address.';
+            break;
+          case 'auth/user-disabled':
+            message = 'This account has been disabled.';
+            break;
+          case 'auth/user-not-found':
+            message = 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            message = 'Incorrect password.';
+            break;
+          case 'auth/too-many-requests':
+            message = 'Too many attempts. Try again later.';
+            break;
+          default:
+            message = err.message || message;
         }
-    });
+      }
+      if (loginError) loginError.textContent = message;
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = prevText || 'Secure Login';
+    }
+  });
 });

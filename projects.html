@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Projects — SkillBridge</title>
   <link rel="stylesheet" href="css/style.css" />
+  <!-- FontAwesome for the Upvote/Heart Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gradient">
@@ -23,84 +24,69 @@
     </div>
   </header>
 
-<main class="container projects-page">
-  <section class="intro glass">
-    <h1>Project Showcase</h1>
-    <p class="muted">Browse projects across engineering branches or find active teams to join.</p>
-    <button id="btn-open-post" class="btn btn-primary" style="margin-top: 15px;">+ Post a New Project</button>
-  </section>
-
-  <div class="tabs-container glass" style="display: flex; gap: 15px; padding: 15px; margin: 20px 0; border-radius: 12px; justify-content: center;">
-    <button id="tab-ongoing" class="btn btn-primary" style="width: 200px;">Ongoing Projects</button>
-    <button id="tab-completed" class="btn btn-ghost" style="width: 200px;">Completed Showcase</button>
-  </div>
-
-  <div id="section-ongoing">
-    <section id="ongoing-projects-container" class="projects-grid container">
-      <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
-        <p class="muted">Loading active collaborations...</p>
-      </div>
+  <main class="container projects-page">
+    <section class="intro glass">
+      <h1>Project Showcase</h1>
+      <p class="muted">Browse projects across engineering branches or find active teams to join.</p>
+      <button id="btn-open-post" class="btn btn-primary" style="margin-top: 15px;">+ Post a New Project</button>
     </section>
-  </div>
 
-  <div id="section-completed" style="display: none;">
-    
-    <section class="filters glass">
-      <div class="filter-row" id="filter-row">
-        <button class="btn btn-sm active" data-filter="all">All</button>
-        <button class="btn btn-sm" data-filter="web">Web</button>
+    <!-- Navigation Tabs -->
+    <div class="tabs-container glass" style="display: flex; gap: 15px; padding: 15px; margin: 20px 0; border-radius: 12px; justify-content: center;">
+      <button id="tab-ongoing" class="btn btn-primary" style="width: 200px;">Ongoing Projects</button>
+      <button id="tab-completed" class="btn btn-ghost" style="width: 200px;">Completed Showcase</button>
+    </div>
+
+    <!-- ONGOING PROJECTS SECTION -->
+    <div id="section-ongoing">
+      <section id="ongoing-projects-container" class="projects-grid container" style="padding-top: 0;">
+        <div class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
+          <p class="muted">Loading active collaborations...</p>
         </div>
-    </section>
+      </section>
+    </div>
 
-    <section id="projects-container" class="projects-grid container">
+    <!-- COMPLETED PROJECTS SECTION -->
+    <div id="section-completed" style="display: none;">
+      <section class="filters glass" style="margin-bottom: 20px;">
+        <div class="filter-row" id="filter-row" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+          <button class="btn btn-sm btn-outline active" data-filter="all">All</button>
+          <button class="btn btn-sm btn-outline" data-filter="web">Web</button>
+          <button class="btn btn-sm btn-outline" data-filter="ai">AI</button>
+          <button class="btn btn-sm btn-outline" data-filter="mobile">Mobile</button>
+          <button class="btn btn-sm btn-outline" data-filter="civil">Civil</button>
+          <button class="btn btn-sm btn-outline" data-filter="electrical">Electrical</button>
+          <button class="btn btn-sm btn-outline" data-filter="datascience">Data Science</button>
+          <button class="btn btn-sm btn-outline" data-filter="environmental">Environmental</button>
+        </div>
       </section>
 
-  </div>
-</main>
-
-    <section class="filters glass">
-      <div class="filter-row" id="filter-row">
-        <button class="btn btn-sm active" data-filter="all">All</button>
-        <button class="btn btn-sm" data-filter="web">Web</button>
-        <button class="btn btn-sm" data-filter="ai">AI</button>
-        <button class="btn btn-sm" data-filter="mobile">Mobile</button>
-        <button class="btn btn-sm" data-filter="civil">Civil</button>
-        <button class="btn btn-sm" data-filter="mechanical">Mechanical</button>
-        <button class="btn btn-sm" data-filter="electrical">Electrical</button>
-        <button class="btn btn-sm" data-filter="chemical">Chemical</button>
-        <button class="btn btn-sm" data-filter="biomedical">Biomedical</button>
-        <button class="btn btn-sm" data-filter="environmental">Environmental</button>
-        <button class="btn btn-sm" data-filter="embedded">Embedded</button>
-        <button class="btn btn-sm" data-filter="datascience">Data Science</button>
-      </div>
-    </section>
-
-    <section id="projects-container" class="projects-grid container">
-      <div id="loading-placeholder" class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
-        <strong>Loading projects…</strong>
-        <p class="muted">If Firestore is configured, projects will load from the database. Otherwise sample projects are shown.</p>
-      </div>
-    </section>
-
-    <footer class="site-footer glass">
-      <div class="container footer-grid">
-        <div>
-          <h3>SkillBridge</h3>
-          <p class="muted">© 2026 SkillBridge</p>
+      <section id="projects-container" class="projects-grid container" style="padding-top: 0;">
+        <div id="loading-placeholder" class="glass" style="grid-column:1/-1;padding:18px;text-align:center;">
+          <strong>Loading projects…</strong>
         </div>
-        <div class="footer-links">
-          <a href="index.html">Home</a>
-          <a href="roadmap.html">Skill Tracks</a>
-          <a href="login.html">Login</a>
-        </div>
-      </div>
-    </footer>
+      </section>
+    </div>
   </main>
-<!-- Standard Module Loading -->
+
+  <footer class="site-footer glass">
+    <div class="container footer-grid">
+      <div>
+        <h3>SkillBridge</h3>
+        <p class="muted">© 2026 SkillBridge</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html" class="link">Home</a>
+        <a href="roadmap.html" class="link" style="margin-left: 15px;">Skill Tracks</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALS -->
   <div id="modal-post" class="modal-overlay" style="display: none;">
     <div class="modal-content glass">
       <span class="close-modal" id="close-post">&times;</span>
-      <h2>Post a New Project</h2>
+      <h2 style="margin-top: 0;">Post a New Project</h2>
       <p class="muted small">Find the best talent blindly based on skills.</p>
       
       <form id="form-post-project" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
@@ -109,11 +95,11 @@
         <select id="post-category" required class="form-control">
           <option value="web">Web</option>
           <option value="ai">AI</option>
-          <option value="mobile">Mobile</option>
+          <option value="electrical">Electrical</option>
           <option value="datascience">Data Science</option>
         </select>
         <input type="number" id="post-spots" min="1" max="10" placeholder="Total Spots Available" required class="form-control">
-        <button type="submit" class="btn btn-primary">Publish Project</button>
+        <button type="submit" class="btn btn-primary" style="justify-content: center;">Publish Project</button>
       </form>
     </div>
   </div>
@@ -121,19 +107,21 @@
   <div id="modal-apply" class="modal-overlay" style="display: none;">
     <div class="modal-content glass">
       <span class="close-modal" id="close-apply">&times;</span>
-      <h2>Apply Anonymously</h2>
+      <h2 style="margin-top: 0;">Apply Anonymously</h2>
       <p class="muted small">Your name will be hidden from the owner until accepted.</p>
       
       <form id="form-apply" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-        <input type="hidden" id="apply-project-id"> <input type="text" id="apply-branch" placeholder="Your Branch (e.g., Computer Science)" required class="form-control">
+        <input type="hidden" id="apply-project-id"> 
+        <input type="text" id="apply-branch" placeholder="Your Branch (e.g., Computer Science)" required class="form-control">
         <input type="text" id="apply-skills" placeholder="Your Skills (e.g., JS, React, Firebase)" required class="form-control">
         <textarea id="apply-pitch" placeholder="Why are you a good fit for this project?" rows="4" required class="form-control"></textarea>
-        <button type="submit" class="btn btn-primary">Submit Application</button>
+        <button type="submit" class="btn btn-primary" style="justify-content: center;">Submit Application</button>
       </form>
     </div>
   </div>
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/projects.js"></script>
-<script src="js/chat.js"></script>
+
+  <!-- Note: We are using type="module" so we can import Firebase safely -->
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/projects.js"></script>
 </body>
 </html>

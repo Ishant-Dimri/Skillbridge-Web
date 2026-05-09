@@ -1,63 +1,68 @@
-// login.js
-import { auth } from './firebase.js';
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+// js/login.js
+
+// 🛑 FIREBASE IMPORTS (Commented out for Dummy Demo) 🛑
+// import { auth } from './firebase.js'; 
+// import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('login-form');
-  const loginBtn = document.getElementById('login-submit');
-  const loginError = document.getElementById('login-error');
+    const loginForm = document.getElementById('real-login-form');
+    const loginError = document.getElementById('login-error');
 
-  if (!loginForm) return;
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+            // Capture inputs
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const role = document.getElementById('user-role').value; // Get selected role
 
-    const email = (loginForm['email']?.value || '').trim();
-    const password = loginForm['password']?.value || '';
+            if (!role) {
+                showError("Please select a role to continue.");
+                return;
+            }
 
-    if (!email || !password) {
-      if (loginError) loginError.textContent = 'Please enter both email and password.';
-      return;
+            // --- SIMULATED LOGIN LOGIC ---
+            console.log(`Attempting login for: ${email} as ${role}`);
+            
+            // Show loading state on button
+            const loginBtn = document.getElementById('login-btn');
+            const originalText = loginBtn.innerText;
+            loginBtn.innerText = "Authenticating...";
+            loginBtn.disabled = true;
+
+            // Simulate network delay
+            setTimeout(() => {
+                // For the Hackathon demo, we accept any credentials
+                if (email && password) {
+                    console.log("Login Successful (Simulated)");
+                    
+                    // REDIRECTION LOGIC BASED ON ROLE
+                    if (role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else if (role === 'student') {
+                        window.location.href = 'dashboard.html';
+                    } else if (role === 'alumni') {
+                        window.location.href = 'talent.html';
+                    }
+                } else {
+                    showError("Invalid email or password.");
+                    loginBtn.innerText = originalText;
+                    loginBtn.disabled = false;
+                }
+            }, 1000);
+        });
     }
 
-    loginBtn.disabled = true;
-    const prevText = loginBtn.textContent;
-    loginBtn.textContent = 'Signing in...';
-    if (loginError) loginError.textContent = '';
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged in nav.js will update nav UI to Logout automatically
-      // Redirect to dashboard or desired page after successful sign-in
-      window.location.href = './dashboard.html';
-    } catch (err) {
-      console.error('Login failed:', err);
-      let message = 'Login failed. Please try again.';
-      if (err?.code) {
-        switch (err.code) {
-          case 'auth/invalid-email':
-            message = 'Invalid email address.';
-            break;
-          case 'auth/user-disabled':
-            message = 'This account has been disabled.';
-            break;
-          case 'auth/user-not-found':
-            message = 'No account found with this email.';
-            break;
-          case 'auth/wrong-password':
-            message = 'Incorrect password.';
-            break;
-          case 'auth/too-many-requests':
-            message = 'Too many attempts. Try again later.';
-            break;
-          default:
-            message = err.message || message;
+    function showError(message) {
+        if (loginError) {
+            loginError.innerText = message;
+            loginError.style.display = 'block';
+            
+            // Hide error after 3 seconds
+            setTimeout(() => {
+                loginError.style.display = 'none';
+            }, 3000);
         }
-      }
-      if (loginError) loginError.textContent = message;
-    } finally {
-      loginBtn.disabled = false;
-      loginBtn.textContent = prevText || 'Secure Login';
     }
-  });
 });

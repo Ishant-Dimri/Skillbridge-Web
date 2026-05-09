@@ -1,59 +1,56 @@
-// js/nav.js
-import { auth, db } from './firebase.js';
+// nav.js
+import { auth } from './firebase.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-document.addEventListener('DOMContentLoaded', () => {
-    const studentLinks = document.querySelectorAll('.nav-student');
-    const recruiterLinks = document.querySelectorAll('.nav-recruiter');
-    const adminLinks = document.querySelectorAll('.nav-admin');
-    const authBtn = document.getElementById('nav-auth-btn');
+const authBtn = document.getElementById('auth-btn');
 
-    // Real-Time Firebase Auth Listener
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // User is logged in! Fetch their role.
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            let role = "student"; // Default fallback
-            
-            if (userDoc.exists()) {
-                role = userDoc.data().role;
-            }
+function setAsLogin() {
+  if (!authBtn) return;
+  authBtn.textContent = 'Login';
+  authBtn.onclick = () => {
+    window.location.href = './login.html';
+  };
+}
 
-            // Update Auth Button to Logout
-            authBtn.innerText = `Logout`;
-            authBtn.classList.remove('btn-outline');
-            authBtn.classList.add('btn-ghost');
-            authBtn.href = "#"; 
-            
-            // Handle Real Logout
-            authBtn.onclick = (e) => {
-                e.preventDefault();
-                signOut(auth).then(() => {
-                    window.location.href = 'index.html';
-                });
-            };
+function setAsLogout() {
+  if (!authBtn) return;
+  authBtn.textContent = 'Logout';
+  authBtn.onclick = async () => {
+    authBtn.disabled = true;
+    try {
+      await signOut(auth);
+      // optional: redirect after sign out
+      // window.location.href = './index.html';
+    } catch (err) {
+      console.error('Sign out error:', err);
+      alert('Sign out failed. Check console for details.');
+    } finally {
+      authBtn.disabled = false;
+    }
+  };
+}
 
-            // Unhide correct links based on real database role
-            if (role === 'student') {
-                studentLinks.forEach(link => link.style.display = 'inline-block');
-            } else if (role === 'recruiter') {
-                recruiterLinks.forEach(link => link.style.display = 'inline-block');
-            } else if (role === 'admin' || role === 'mentor') {
-                adminLinks.forEach(link => link.style.display = 'inline-block');
-                recruiterLinks.forEach(link => link.style.display = 'inline-block'); 
-            }
-
-        } else {
-            // User is logged out. Keep UI locked down.
-            studentLinks.forEach(link => link.style.display = 'none');
-            recruiterLinks.forEach(link => link.style.display = 'none');
-            adminLinks.forEach(link => link.style.display = 'none');
-            
-            authBtn.innerText = "Login";
-            authBtn.href = "login.html";
-            authBtn.classList.add('btn-outline');
-            authBtn.classList.remove('btn-ghost');
-        }
-    });
+// Update UI on auth state changes
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    setAsLogout();
+  } else {
+    setAsLogin();
+  }
 });
+
+// If the button is added dynamically after this script runs, observe DOM and attach behavior
+if (!authBtn) {
+  const observer = new MutationObserver(() => {
+    const btn = document.getElementById('auth-btn');
+    if (btn) {
+      observer.disconnect();
+      // re-run the same logic now that the button exists
+      onAuthStateChanged(auth, (user) => {
+        if (user) setAsLogout();
+        else setAsLogin();
+      });
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}

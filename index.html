@@ -9,16 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gradient"><nav>
+<body class="bg-gradient">
   
- <a href="dashboard.html">Dashboard</a>
-        <a href="talent.html">Talent Pool</a>
-        <a href="admin.html">Admin Panel</a>
-        <a href="login.html" class="btn btn-ghost">Login</a>
+  <!-- SAFE RESTORED HEADER START -->
+  <header class="nav glass">
+    <div class="container nav-inner" style="display: flex; justify-content: space-between; align-items: center;">
+      
+      <!-- Original Logo & Tagline -->
+      <a class="brand" href="index.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 2px;">
+        <div class="logo-glow" style="font-size: 1.5rem; font-weight: bold; color: white;">
+          <span style="color: #ff5722; margin-right: 5px;">●</span>SkillBridge
+        </div>
+        <small class="tag" style="color: #888; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Learn → Build → Showcase → Get Job Ready</small>
+      </a>
+      
+      <!-- The Cool Box around your original links -->
+      <nav class="nav-links" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 24px; border-radius: 50px; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 20px;">
+        <a href="index.html" class="nav-link home-link" style="display: flex; align-items: center; gap: 5px; color: var(--text-muted); text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home
+        </a>
+        <a href="roadmap.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Skill Tracks</a>
+        <a href="projects.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Projects</a>
+        <a href="upload.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Upload</a>
+        <a href="dashboard.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Dashboard</a>
+        <a href="talent.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Talent Pool</a>
+        <a href="admin.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Admin Panel</a>
+        <a href="login.html" class="btn btn-ghost" style="margin-left: 10px;">Login</a>
       </nav>
     </div>
   </header>
-        
+  <!-- SAFE RESTORED HEADER END -->
 
   <main>
     <!-- HERO -->
@@ -28,12 +52,7 @@
           <h1 class="display">SkillBridge</h1>
           <p class="lead">A modern industry-readiness platform that helps learners transform knowledge into real projects, build a portfolio, and get job-ready with guided roadmaps, mentor-backed projects, and placement-focused tasks.</p>
           <div class="cta-row">
-            <!-- Before: inconsistent href + onclick -->
-<!-- <a class="btn btn-primary" href="signup.html" onclick="location.href='login.html'">Get Started</a> -->
-
-<!-- After: consistent link to login -->
-<a class="btn btn-primary" href="login.html">Get Started</a>
-
+            <a class="btn btn-primary" href="login.html">Get Started</a>
             <a class="btn btn-outline" href="#how-it-works">Explore</a>
           </div>
 
@@ -99,7 +118,6 @@
           <h3>How SkillBridge Works</h3>
           <p class="muted">A short walkthrough that explains our approach: learn with curated resources, build real projects, and showcase your work to employers.</p>
           <div class="video-embed">
-            <!-- Embedded educational video (open-source / public tutorials) -->
             <iframe width="100%" height="315" src="https://www.youtube.com/embed/jS4aFq5-91M" title="How to Learn Web Development - freeCodeCamp" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <p class="caption">This video is an example of the learning philosophy we follow: project-first, practical, and industry-aligned.</p>

@@ -1,8 +1,55 @@
 // js/portfolio.js
+import { db } from './firebase.js';
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Get the Student's UID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetStudentUid = urlParams.get('user');
+
+    if (!targetStudentUid) {
+        document.body.innerHTML = "<h2 style='color:white; text-align:center;'>Error: No student selected.</h2>";
+        return;
+    }
+
+    // 2. Fetch Certificates for this specific student
+    const certListDiv = document.getElementById('portfolio-certificates'); // Make sure you have this ID in your portfolio.html!
+    
+    if (certListDiv) {
+        certListDiv.innerHTML = "<p class='muted'>Loading verified certificates...</p>";
+        
+        try {
+            const q = query(collection(db, "certificates"), where("studentId", "==", targetStudentUid));
+            const querySnapshot = await getDocs(q);
+            
+            certListDiv.innerHTML = ""; // Clear loading text
+            
+            if (querySnapshot.empty) {
+                certListDiv.innerHTML = "<p class='muted small'>No certificates uploaded yet.</p>";
+            } else {
+                querySnapshot.forEach((doc) => {
+                    const cert = doc.data();
+                    // Build the Certificate UI Card
+                    certListDiv.innerHTML += `
+                        <div style="background: var(--surface-hover); border: 1px solid var(--surface-border); padding: 16px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 4px 0; color: var(--text-main);">${cert.courseName}</h4>
+                                <p style="margin: 0; color: var(--accent2); font-size: 12px; font-weight: bold;">Verified via ${cert.platform}</p>
+                            </div>
+                            <a href="${cert.fileUrl}" target="_blank" class="btn btn-sm btn-outline">View Certificate</a>
+                        </div>
+                    `;
+                });
+            }
+        } catch (error) {
+            console.error("Error loading certificates:", error);
+            certListDiv.innerHTML = "<p class='danger'>Could not load certificates.</p>";
+        }
+    }
+});
 // 🛑 FIREBASE COMMENTED OUT FOR DUMMY DEMO 🛑
-// import { app, db } from './firebase.js';
-// import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+ import { app, db } from './firebase.js';
+ import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 // Dictionary to convert raw skill IDs to readable tags
 const skillLabels = {

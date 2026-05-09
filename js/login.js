@@ -1,45 +1,59 @@
-// js/login.js
-// Handles dummy login routing based on role selection
+// js/nav.js
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    const roleCards = document.querySelectorAll('.role-card');
+    const studentLinks = document.querySelectorAll('.nav-student');
+    const recruiterLinks = document.querySelectorAll('.nav-recruiter');
+    const adminLinks = document.querySelectorAll('.nav-admin');
+    const authBtn = document.getElementById('nav-auth-btn');
 
-    roleCards.forEach(card => {
-        
-        // Add a nice hover effect purely via JS
-        card.addEventListener('mouseenter', () => {
-            card.style.borderColor = 'var(--text-muted)';
-            card.style.transform = 'translateY(-4px)';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.borderColor = 'var(--surface-border)';
-            card.style.transform = 'translateY(0)';
-        });
-
-        // Handle the actual click (Login)
-        card.addEventListener('click', () => {
-            const selectedRole = card.getAttribute('data-role');
-            const btn = card.querySelector('button');
+    // Real-Time Firebase Auth Listener
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // User is logged in! Fetch their role.
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            let role = "student"; // Default fallback
             
-            // UI feedback
-            btn.innerText = "Authenticating...";
-            btn.classList.remove('btn-outline');
-            btn.classList.add('btn-primary');
+            if (userDoc.exists()) {
+                role = userDoc.data().role;
+            }
 
-            // Simulate network delay
-            setTimeout(() => {
-                // 1. Save the role to local storage
-                localStorage.setItem('skillbridge_role', selectedRole);
+            // Update Auth Button to Logout
+            authBtn.innerText = `Logout`;
+            authBtn.classList.remove('btn-outline');
+            authBtn.classList.add('btn-ghost');
+            authBtn.href = "#"; 
+            
+            // Handle Real Logout
+            authBtn.onclick = (e) => {
+                e.preventDefault();
+                signOut(auth).then(() => {
+                    window.location.href = 'index.html';
+                });
+            };
 
-                // 2. Redirect to the correct dashboard
-                if (selectedRole === 'student') {
-                    window.location.href = 'dashboard.html';
-                } else if (selectedRole === 'recruiter') {
-                    window.location.href = 'talent.html';
-                } else if (selectedRole === 'admin') {
-                    window.location.href = 'admin.html';
-                }
-            }, 600);
-        });
+            // Unhide correct links based on real database role
+            if (role === 'student') {
+                studentLinks.forEach(link => link.style.display = 'inline-block');
+            } else if (role === 'recruiter') {
+                recruiterLinks.forEach(link => link.style.display = 'inline-block');
+            } else if (role === 'admin' || role === 'mentor') {
+                adminLinks.forEach(link => link.style.display = 'inline-block');
+                recruiterLinks.forEach(link => link.style.display = 'inline-block'); 
+            }
+
+        } else {
+            // User is logged out. Keep UI locked down.
+            studentLinks.forEach(link => link.style.display = 'none');
+            recruiterLinks.forEach(link => link.style.display = 'none');
+            adminLinks.forEach(link => link.style.display = 'none');
+            
+            authBtn.innerText = "Login";
+            authBtn.href = "login.html";
+            authBtn.classList.add('btn-outline');
+            authBtn.classList.remove('btn-ghost');
+        }
     });
 });

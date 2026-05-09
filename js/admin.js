@@ -1,10 +1,26 @@
 // js/admin.js
-import { db, auth } from './firebase.js'; 
-import { collection, addDoc, query, where, getDocs, doc, updateDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"; 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+// 🛑 FIREBASE IMPORTS COMMENTED OUT FOR DUMMY DEMO 🛑
+// import { db, auth } from './firebase.js'; 
+// import { collection, addDoc, query, where, getDocs, doc, updateDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"; 
+// import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 // Wait for the HTML to fully load before running scripts
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 🌟 --- DUMMY DATA FOR TESTING --- 🌟
+    const dummyMentees = [
+        { id: "stu_001", name: "Aarav Sharma", status: "active", mentorRating: "ready", roadmapProgress: "React Fundamentals (80%)", portfolioLink: "portfolio.html?user=stu_001", mentorFeedback: "Great job on the API integration." },
+        { id: "stu_002", name: "Piyush Gupta", status: "active", mentorRating: "needs_improvement", roadmapProgress: "JavaScript Basics (45%)", portfolioLink: "portfolio.html?user=stu_002", mentorFeedback: "Focus more on understanding Promises and async/await." },
+        { id: "stu_003", name: "Neha Verma", status: "active", mentorRating: "not_ready", roadmapProgress: "HTML & CSS (15%)", portfolioLink: "portfolio.html?user=stu_003", mentorFeedback: "" },
+        { id: "stu_004", name: "Kabir Singh", status: "active", mentorRating: "", roadmapProgress: "Node.js Backend (60%)", portfolioLink: "portfolio.html?user=stu_004", mentorFeedback: "" }
+    ];
+
+    const dummyAlumni = [
+        { id: "alum_001", name: "Ishant Dimri", status: "alumni", readinessScore: 98, projectCount: 6, linkedIn: "https://linkedin.com/" },
+        { id: "alum_002", name: "Riya Patel", status: "alumni", readinessScore: 85, projectCount: 4, linkedIn: "https://linkedin.com/" }
+    ];
+    // 🌟 ------------------------------ 🌟
 
     // ==========================================
     // 1. Handle Adding Global Tasks
@@ -16,18 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = document.getElementById('task-title').value.trim();
             const desc = document.getElementById('task-desc').value.trim();
             
-            try {
-                await addDoc(collection(db, 'tasks'), {
-                    title: title,
-                    description: desc,
-                    createdAt: new Date().toISOString()
-                });
-                alert('Global Task added successfully!');
+            // Simulate network delay
+            setTimeout(() => {
+                console.log(`[Mock DB Write] Task Added: ${title}`);
+                alert('Global Task added successfully! (Simulated)');
                 taskForm.reset();
-            } catch (err) {
-                console.error("Error adding task:", err);
-                alert('Error adding task: ' + err.message);
-            }
+            }, 500);
         });
     }
 
@@ -41,18 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = document.getElementById('resource-title').value.trim();
             const link = document.getElementById('resource-link').value.trim();
             
-            try {
-                await addDoc(collection(db, 'resources'), {
-                    title: title,
-                    link: link,
-                    createdAt: new Date().toISOString()
-                });
-                alert('Learning Resource added successfully!');
+            // Simulate network delay
+            setTimeout(() => {
+                console.log(`[Mock DB Write] Resource Added: ${title}`);
+                alert('Learning Resource added successfully! (Simulated)');
                 resourceForm.reset();
-            } catch (err) {
-                console.error("Error adding resource:", err);
-                alert('Error adding resource: ' + err.message);
-            }
+            }, 500);
         });
     }
 
@@ -63,68 +67,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const reviewPanel = document.getElementById('review-panel');
     const reviewForm = document.getElementById('mentor-review-form');
 
-    // Wait for the mentor to log in using a reliable state listener
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            loadMentees(user.uid);
-            loadAlumni(user.uid); // Load the completed students list too!
-        } else {
-            if (menteeListDiv) menteeListDiv.innerHTML = "<p class='muted'>Please log in to view your students.</p>";
-            const alumniListDiv = document.getElementById('alumni-list');
-            if (alumniListDiv) alumniListDiv.innerHTML = "<p class='muted'>Please log in.</p>";
-        }
-    });
+    // 🛑 Bypass Firebase Auth for Demo 🛑
+    // Normally this waits for user login. We will just load data immediately.
+    setTimeout(() => {
+        loadMentees('dummy_mentor_123');
+        loadAlumni('dummy_mentor_123');
+    }, 300);
 
     // Fetch Active Students Assigned to this Mentor
     async function loadMentees(mentorUid) {
         if (!menteeListDiv) return;
+        menteeListDiv.innerHTML = ""; // Clear list
 
-        try {
-            const usersRef = collection(db, "users");
-            // Find students who have this user set as their mentor
-            const q = query(
-                usersRef, 
-                where("mentorId", "==", mentorUid)
-            );
+        let activeCount = 0;
+
+        // Loop through Dummy Data instead of Firestore snapshot
+        dummyMentees.forEach(student => {
+            if (student.status === "alumni") return; 
             
-            const snapshot = await getDocs(q);
-            menteeListDiv.innerHTML = ""; // Clear loading text
+            activeCount++;
 
-            // We only want to show students who are NOT alumni yet in this specific list
-            let activeCount = 0;
+            // Determine current status indicator
+            let statusDot = "⚪"; 
+            if (student.mentorRating === "ready") statusDot = "🟢";
+            if (student.mentorRating === "needs_improvement") statusDot = "🟡";
+            if (student.mentorRating === "not_ready") statusDot = "🔴";
 
-            snapshot.forEach(doc => {
-                const student = doc.data();
-                const studentId = doc.id;
-                
-                // If they are finished with the course, skip them (they go to the other list)
-                if (student.status === "alumni") return; 
-                
-                activeCount++;
+            const btn = document.createElement('button');
+            btn.className = "btn btn-outline"; // Changed to outline for better UI look
+            btn.innerHTML = `${statusDot} ${student.name}`;
+            btn.style.cssText = "display: block; width: 100%; text-align: left; margin-bottom: 8px; justify-content: flex-start;";
+            
+            // When clicked, open their profile in the panel
+            btn.onclick = () => {
+                // Remove active class from all buttons, add to clicked
+                Array.from(menteeListDiv.children).forEach(b => b.style.background = "transparent");
+                btn.style.background = "rgba(255,255,255,0.1)";
+                openReviewPanel(student.id, student);
+            };
+            menteeListDiv.appendChild(btn);
+        });
 
-                // Determine current status indicator
-                let statusDot = "⚪"; 
-                if (student.mentorRating === "ready") statusDot = "🟢";
-                if (student.mentorRating === "needs_improvement") statusDot = "🟡";
-                if (student.mentorRating === "not_ready") statusDot = "🔴";
-
-                const btn = document.createElement('button');
-                btn.className = "btn btn-ghost"; 
-                btn.innerHTML = `${statusDot} ${student.name || "Unnamed Student"}`;
-                btn.style.cssText = "display: block; width: 100%; text-align: left; margin-bottom: 8px;";
-                
-                // When clicked, open their profile in the panel
-                btn.onclick = () => openReviewPanel(studentId, student);
-                menteeListDiv.appendChild(btn);
-            });
-
-            if (activeCount === 0) {
-                menteeListDiv.innerHTML = "<p class='muted'>You have no active students assigned to you right now.</p>";
-            }
-
-        } catch (error) {
-            console.error("Error loading mentees:", error);
-            if (menteeListDiv) menteeListDiv.innerHTML = "<p style='color: red;'>Error loading active students.</p>";
+        if (activeCount === 0) {
+            menteeListDiv.innerHTML = "<p class='muted'>You have no active students assigned to you right now.</p>";
         }
     }
 
@@ -134,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // UNHIDE THE PANEL
         reviewPanel.style.display = "block";
+        reviewPanel.classList.remove('hidden'); // Just in case you are using a utility class
         
         // Fill in student info
         document.getElementById('review-student-name').innerText = studentData.name || "Student Profile";
@@ -144,12 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('review-rating').value = studentData.mentorRating || "";
         document.getElementById('review-feedback').value = studentData.mentorFeedback || "";
         
-        document.getElementById('review-projects-list').innerHTML = `<li><a href="${studentData.portfolioLink || '#'}" target="_blank" style="color: #4CAF50;">View Live Portfolio</a></li>`;
+        document.getElementById('review-projects-list').innerHTML = `<li><a href="${studentData.portfolioLink || '#'}" target="_blank" style="color: var(--accent2); text-decoration: none;">View Live Portfolio</a></li>`;
         
         document.getElementById('review-status-msg').innerText = "";
     }
 
-    // Submit the Review back to Firestore
+    // Submit the Review back to Firestore (Simulated)
     if (reviewForm) {
         reviewForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -159,29 +145,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const rating = document.getElementById('review-rating').value;
             const feedback = document.getElementById('review-feedback').value;
 
-            try {
-                statusMsg.style.color = "#8a2be2"; 
-                statusMsg.innerText = "Submitting review...";
+            statusMsg.style.color = "var(--accent1)"; 
+            statusMsg.innerText = "Submitting review...";
 
-                // Update the specific student's document in Firestore
-                const studentRef = doc(db, "users", studentId);
-                await updateDoc(studentRef, {
-                    mentorRating: rating,
-                    mentorFeedback: feedback,
-                    lastReviewedAt: serverTimestamp()
-                });
+            // Simulate network delay and update local dummy data
+            setTimeout(() => {
+                // Find student in dummy array and update them
+                const studentIndex = dummyMentees.findIndex(s => s.id === studentId);
+                if (studentIndex > -1) {
+                    dummyMentees[studentIndex].mentorRating = rating;
+                    dummyMentees[studentIndex].mentorFeedback = feedback;
+                }
 
-                statusMsg.style.color = "#4CAF50"; 
+                statusMsg.style.color = "var(--success)"; 
                 statusMsg.innerText = "✅ Review saved successfully!";
                 
                 // Reload the active list to update the colored dots!
-                loadMentees(auth.currentUser.uid);
-
-            } catch (error) {
-                console.error("Error saving review:", error);
-                statusMsg.style.color = "red";
-                statusMsg.innerText = "❌ Error saving review. Check console.";
-            }
+                loadMentees('dummy_mentor_123');
+            }, 600);
         });
     }
 
@@ -192,53 +173,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const alumniListDiv = document.getElementById('alumni-list');
         if (!alumniListDiv) return;
 
-        try {
-            const usersRef = collection(db, "users");
-            
-            // Query: Only this mentor's students + Only completed ('alumni') + Sorted by Score & Projects
-            const q = query(
-                usersRef,
-                where("mentorId", "==", mentorUid),
-                where("status", "==", "alumni"), // Keeping the database status as 'alumni'
-                orderBy("readinessScore", "desc"),
-                orderBy("projectCount", "desc")
-            );
-            
-            const snapshot = await getDocs(q);
-            alumniListDiv.innerHTML = ""; 
+        alumniListDiv.innerHTML = ""; 
 
-            if (snapshot.empty) {
-                alumniListDiv.innerHTML = "<p class='muted'>No students have completed the course under your mentorship yet.</p>";
-                return;
-            }
-
-            // Render the Completed Student Cards
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const card = document.createElement('div');
-                card.className = "glass"; 
-                card.style.cssText = "padding: 15px; border-radius: 8px; border-left: 4px solid #8a2be2;";
-                
-                card.innerHTML = `
-                    <h4 style="margin: 0 0 10px 0; color: white;">${data.name || "Anonymous Student"}</h4>
-                    <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #ccc;">
-                        <span>🔥 Readiness: <strong style="color: #4CAF50;">${data.readinessScore || 0}</strong></span>
-                        <span>📁 Projects: <strong style="color: #4CAF50;">${data.projectCount || 0}</strong></span>
-                    </div>
-                    <div style="margin-top: 10px;">
-                        ${data.linkedIn 
-                            ? `<a href="${data.linkedIn}" target="_blank" style="color: #8a2be2; text-decoration: none; font-weight: bold;">🔗 Review LinkedIn Profile</a>` 
-                            : '<span class="muted" style="font-size: 0.8rem;">No contact info provided</span>'}
-                    </div>
-                `;
-                alumniListDiv.appendChild(card);
-            });
-
-        } catch (error) {
-            console.error("Error loading completed students:", error);
-            // This error message handles the crucial Firebase Index step!
-            alumniListDiv.innerHTML = "<p style='color: #f44336;'>⚠️ Firebase Index Required. Please check your F12 Browser Console for the direct link to build the sorting index.</p>";
+        if (dummyAlumni.length === 0) {
+            alumniListDiv.innerHTML = "<p class='muted'>No students have completed the course under your mentorship yet.</p>";
+            return;
         }
+
+        // Render the Completed Student Cards
+        dummyAlumni.forEach(data => {
+            const card = document.createElement('div');
+            card.className = "glass"; 
+            card.style.cssText = "padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent1); margin-bottom: 12px;";
+            
+            card.innerHTML = `
+                <h4 style="margin: 0 0 10px 0; color: white;">${data.name || "Anonymous Student"}</h4>
+                <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #ccc;">
+                    <span>🔥 Readiness: <strong style="color: var(--success);">${data.readinessScore || 0}</strong></span>
+                    <span>📁 Projects: <strong style="color: var(--success);">${data.projectCount || 0}</strong></span>
+                </div>
+                <div style="margin-top: 10px;">
+                    ${data.linkedIn 
+                        ? `<a href="${data.linkedIn}" target="_blank" style="color: var(--accent1); text-decoration: none; font-weight: bold;">🔗 Review LinkedIn Profile</a>` 
+                        : '<span class="muted" style="font-size: 0.8rem;">No contact info provided</span>'}
+                </div>
+            `;
+            alumniListDiv.appendChild(card);
+        });
     }
 
 });

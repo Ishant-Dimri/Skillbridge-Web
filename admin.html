@@ -10,39 +10,38 @@
 </head>
 <body class="bg-gradient">
   
-  <!-- NEW CUSTOM HEADER START -->
-  <header class="nav custom-top-nav">
-    <div class="nav-inner-container">
+  <!-- SAFE RESTORED HEADER START -->
+  <header class="nav glass">
+    <div class="container nav-inner" style="display: flex; justify-content: space-between; align-items: center;">
       
-      <!-- LEFT SIDE: Logo & Subtitle Stack -->
-      <div class="brand-stack">
-        <a class="brand-title" href="index.html">
+      <!-- Original Logo & Tagline -->
+      <a class="brand" href="index.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 2px;">
+        <div class="logo-glow" style="font-size: 1.5rem; font-weight: bold; color: white;">
           <span style="color: #ff5722; margin-right: 5px;">●</span>SkillBridge
+        </div>
+        <small class="tag" style="color: #888; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Learn → Build → Showcase → Get Job Ready</small>
+      </a>
+      
+      <!-- The Cool Box around your original links -->
+      <nav class="nav-links" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 24px; border-radius: 50px; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 20px;">
+        <a href="index.html" class="nav-link home-link" style="display: flex; align-items: center; gap: 5px; color: var(--text-muted); text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home
         </a>
-        <span class="brand-subtitle">LEARN → BUILD → SHOWCASE → GET JOB READY</span>
-      </div>
-
-      <!-- RIGHT SIDE: The "Cool Box" Nav -->
-      <nav class="cool-nav-box">
-        <a href="index.html" class="nav-link home-link">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          Home
-        </a>
-        <a href="roadmap.html" class="nav-link">Skill Tracks</a>
-        <a href="projects.html" class="nav-link">Projects</a>
-        <a href="upload.html" class="nav-link">Upload</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="talent.html" class="nav-link">Talent Pool</a>
-        <a href="admin.html" class="nav-link">Admin Panel</a>
-        <a href="login.html" class="nav-link login-text">Login</a>
+        <a href="roadmap.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Skill Tracks</a>
+        <a href="projects.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Projects</a>
+        <a href="upload.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Upload</a>
+        <a href="dashboard.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Dashboard</a>
+        <a href="talent.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Talent Pool</a>
+        <a href="admin.html" class="nav-link" style="color: var(--text-muted); text-decoration: none;">Admin Panel</a>
+        <a href="login.html" class="btn btn-ghost" style="margin-left: 10px;">Login</a>
       </nav>
-
     </div>
   </header>
-  <!-- NEW CUSTOM HEADER END -->
+  <!-- SAFE RESTORED HEADER END -->
 
   <main class="container admin-page">
     <section class="admin-grid">

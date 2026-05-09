@@ -5,86 +5,65 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login — SkillBridge</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gradient">
+  
+  <!-- MASTER GLOBAL NAVBAR -->
   <header class="nav glass">
-    <div class="container nav-inner">
+    <div class="container nav-inner" style="padding: 0;">
       <a class="brand" href="index.html">
-        <div class="logo-glow">SkillBridge</div>
+        <div class="logo-glow">
+          <img src="logo.png" alt="SkillBridge Logo" class="nav-logo-img" style="height: 24px; width: auto;">
+          SkillBridge
+        </div>
       </a>
-      <nav class="nav-links">
+      <nav class="nav-links" id="global-nav">
         <a href="index.html">Home</a>
         <a href="roadmap.html">Skill Tracks</a>
         <a href="projects.html">Projects</a>
-        <a href="login.html" class="btn btn-ghost">Login</a>
+        <a href="login.html" id="nav-auth-btn" class="btn btn-outline btn-sm" style="margin-left: 16px;">Login</a>
       </nav>
     </div>
   </header>
 
-  <main class="container auth-page">
-    <section class="auth-grid glass">
-      <div class="auth-left">
-        <h2>Welcome back</h2>
-        <p class="muted">Sign in to continue your learning journey, track progress, and showcase projects to recruiters.</p>
+  <main class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <h1 style="font-size: 36px; margin-bottom: 8px;">Welcome back to SkillBridge</h1>
+      <p class="muted">Select your account type to continue.</p>
+    </div>
 
-        <form id="login-form" class="auth-form">
-          <label>Email</label>
-          <input id="login-email" type="email" placeholder="you@domain.com" required />
-          <label>Password</label>
-          <input id="login-password" type="password" placeholder="••••••••" minlength="6" required />
-          <div class="form-row">
-            <button type="submit" class="btn btn-primary">Login</button>
-            <button id="google-signin" type="button" class="btn btn-outline"><i class="fa-brands fa-google"></i> Sign in with Google</button>
-          </div>
-          <p class="muted small">Don't have an account? <a href="#" id="show-signup">Create one</a></p>
-        </form>
+    <!-- Role Selection Cards -->
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; max-width: 900px;">
+      
+      <!-- Student Card -->
+      <div class="glass role-card" data-role="student" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
+        <div style="font-size: 40px; color: var(--accent1); margin-bottom: 16px;"><i class="fa-solid fa-user-graduate"></i></div>
+        <h3>Learner</h3>
+        <p class="muted small" style="margin-bottom: 24px;">Build projects, track your readiness score, and get hired.</p>
+        <button class="btn btn-outline" style="width: 100%;">Login as Learner</button>
       </div>
 
-      <div class="auth-right glass">
-        <h3>Create an account</h3>
-        <p class="muted">Join SkillBridge to access guided roadmaps, projects, and placement tools.</p>
-
-        <form id="signup-form" class="auth-form hidden">
-          <label>Full name</label>
-          <input id="signup-name" type="text" placeholder="Your name" required />
-          <label>Email</label>
-          <input id="signup-email" type="email" placeholder="you@domain.com" required />
-          <label>Password</label>
-          <input id="signup-password" type="password" placeholder="Create a password" minlength="6" required />
-          <div class="form-row">
-            <button type="submit" class="btn btn-primary">Sign up</button>
-            <button id="back-to-login" type="button" class="btn btn-ghost">Back</button>
-          </div>
-          <p class="muted small">By signing up you agree to our Terms and Privacy Policy.</p>
-        </form>
-
-        <div class="auth-info">
-          <h4>Why create an account?</h4>
-          <ul>
-            <li>Save progress and roadmaps</li>
-            <li>Upload and showcase projects</li>
-            <li>Get a placement readiness score</li>
-          </ul>
-        </div>
+      <!-- Recruiter Card -->
+      <div class="glass role-card" data-role="recruiter" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
+        <div style="font-size: 40px; color: var(--accent2); margin-bottom: 16px;"><i class="fa-solid fa-briefcase"></i></div>
+        <h3>Recruiter</h3>
+        <p class="muted small" style="margin-bottom: 24px;">Browse the talent pool and hire verified placement-ready engineers.</p>
+        <button class="btn btn-outline" style="width: 100%;">Login as Recruiter</button>
       </div>
-    </section>
+
+      <!-- Admin/Mentor Card -->
+      <div class="glass role-card" data-role="admin" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
+        <div style="font-size: 40px; color: var(--warning); margin-bottom: 16px;"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Admin / Mentor</h3>
+        <p class="muted small" style="margin-bottom: 24px;">Review projects, provide feedback, and manage the platform.</p>
+        <button class="btn btn-outline" style="width: 100%;">Login as Admin</button>
+      </div>
+
+    </div>
   </main>
 
-  <script src="js/firebase.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
-    // UI toggles
-    document.getElementById('show-signup').addEventListener('click', (e) => {
-      e.preventDefault();
-      document.getElementById('signup-form').classList.remove('hidden');
-      document.getElementById('login-form').classList.add('hidden');
-    });
-    document.getElementById('back-to-login').addEventListener('click', () => {
-      document.getElementById('signup-form').classList.add('hidden');
-      document.getElementById('login-form').classList.remove('hidden');
-    });
-  </script>
+  <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/nav.js"></script>
 </body>
 </html>

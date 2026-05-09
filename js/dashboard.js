@@ -1,4 +1,59 @@
-// dashboard.js — Populate dashboard data, compute progress and placement score
+// At the top of js/dashboard.js, add the storage imports:
+import { db, auth, storage } from './firebase.js';
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+// ... your existing dashboard code ...
+
+// The Certificate Upload Logic
+const certForm = document.getElementById('upload-cert-form');
+if (certForm) {
+    certForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('cert-submit-btn');
+        const user = auth.currentUser;
+        if (!user) return alert("You must be logged in!");
+
+        const certName = document.getElementById('cert-name').value;
+        const certIssuer = document.getElementById('cert-issuer').value;
+        const fileInput = document.getElementById('cert-file').files[0]; // Get the actual file
+
+        btn.innerText = "Uploading File...";
+        btn.disabled = true;
+
+        try {
+            // 1. Create a reference to Firebase Storage (where to save the file)
+            // We organize folders by User ID: certificates/UID/filename.pdf
+            const storageRef = ref(storage, `certificates/${user.uid}/${fileInput.name}`);
+
+            // 2. Upload the file to Storage
+            await uploadBytes(storageRef, fileInput);
+
+            // 3. Get the live URL of the uploaded file
+            const downloadUrl = await getDownloadURL(storageRef);
+
+            // 4. Save the URL and details into the Firestore Database
+            btn.innerText = "Saving to Database...";
+            await addDoc(collection(db, "certificates"), {
+                studentId: user.uid,
+                courseName: certName,
+                platform: certIssuer,
+                fileUrl: downloadUrl, // This is the link the recruiter will click!
+                uploadedAt: serverTimestamp()
+            });
+
+            alert("Certificate successfully added to your portfolio!");
+            certForm.reset();
+        } catch (error) {
+            console.error("Upload failed:", error);
+            alert("Error uploading file. Check console.");
+        } finally {
+            btn.innerText = "Upload to Portfolio";
+            btn.disabled = false;
+        }
+    });
+}// dashboard.js — Populate dashboard data, compute progress and placement score
 // Requires firebase.js and auth.js to be loaded
 import { collection, query, where, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 // (Keep whatever other imports you already have like getDoc, etc.)

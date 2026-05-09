@@ -28,41 +28,22 @@
   </header>
 
   <main class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
-    <div style="text-align: center; margin-bottom: 32px;">
-      <h1 style="font-size: 36px; margin-bottom: 8px;">Welcome back to SkillBridge</h1>
-      <p class="muted">Select your account type to continue.</p>
-    </div>
+    <div class="glass" style="width: 100%; max-width: 400px; padding: 40px; text-align: center;">
+      <div style="font-size: 40px; color: var(--accent1); margin-bottom: 16px;"><i class="fa-solid fa-fingerprint"></i></div>
+      <h2 style="margin: 0 0 8px 0;">Sign In</h2>
+      <p class="muted small" style="margin-bottom: 24px;">Enter your credentials to access your dashboard.</p>
 
-    <!-- Role Selection Cards -->
-    <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; max-width: 900px;">
+      <form id="real-login-form" style="display: flex; flex-direction: column; gap: 16px;">
+        <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required>
+        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        <button type="submit" class="btn btn-primary" id="login-btn" style="width: 100%; justify-content: center; padding: 12px;">Secure Login</button>
+      </form>
       
-      <!-- Student Card -->
-      <div class="glass role-card" data-role="student" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
-        <div style="font-size: 40px; color: var(--accent1); margin-bottom: 16px;"><i class="fa-solid fa-user-graduate"></i></div>
-        <h3>Learner</h3>
-        <p class="muted small" style="margin-bottom: 24px;">Build projects, track your readiness score, and get hired.</p>
-        <button class="btn btn-outline" style="width: 100%;">Login as Learner</button>
-      </div>
-
-      <!-- Recruiter Card -->
-      <div class="glass role-card" data-role="recruiter" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
-        <div style="font-size: 40px; color: var(--accent2); margin-bottom: 16px;"><i class="fa-solid fa-briefcase"></i></div>
-        <h3>Recruiter</h3>
-        <p class="muted small" style="margin-bottom: 24px;">Browse the talent pool and hire verified placement-ready engineers.</p>
-        <button class="btn btn-outline" style="width: 100%;">Login as Recruiter</button>
-      </div>
-
-      <!-- Admin/Mentor Card -->
-      <div class="glass role-card" data-role="admin" style="flex: 1; min-width: 250px; cursor: pointer; text-align: center; transition: all 0.2s;">
-        <div style="font-size: 40px; color: var(--warning); margin-bottom: 16px;"><i class="fa-solid fa-shield-halved"></i></div>
-        <h3>Admin / Mentor</h3>
-        <p class="muted small" style="margin-bottom: 24px;">Review projects, provide feedback, and manage the platform.</p>
-        <button class="btn btn-outline" style="width: 100%;">Login as Admin</button>
-      </div>
-
+      <div id="login-error" style="color: var(--danger); font-size: 13px; margin-top: 16px; display: none;"></div>
     </div>
   </main>
 
+  <script type="module" src="js/firebase.js"></script>
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/nav.js"></script>
 </body>

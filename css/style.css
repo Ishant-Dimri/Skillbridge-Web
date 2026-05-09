@@ -67,15 +67,12 @@ body {
 /* =========================================
    CORE COMPONENTS (Surfaces, Nav, Buttons)
    ========================================= */
-/* Kept the class name '.glass' so your HTML doesn't break, 
-   but it's now a premium, solid matte card. */
 .glass {
   background: var(--surface-bg);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius);
   padding: 24px;
   box-shadow: var(--shadow-soft);
-  /* Optional: A very subtle top highlight to give it a 3D tactile edge */
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
@@ -93,7 +90,7 @@ body {
   backdrop-filter: blur(8px);
 }
 
-.brand { display: flex; flex-direction: column; text-decoration: none; }
+.brand { display: flex; flex-direction: column; text-decoration: none; gap: 2px; }
 .logo-glow {
   font-weight: 800;
   font-size: 20px;
@@ -102,8 +99,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  line-height: 1; /* Fixes spacing */
 }
-/* Adding a crafted dot next to the logo instead of gradient text */
 .logo-glow::before {
   content: '';
   display: inline-block;
@@ -112,24 +109,41 @@ body {
   background-color: var(--accent1);
   border-radius: 50%;
 }
+.tag { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; line-height: 1;}
 
-.tag { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
-.nav-links a { color: var(--text-muted); margin-left: 24px; text-decoration: none; font-weight: 500; transition: color 0.15s ease; }
+/* === The "Cool Box" Applied safely to your original HTML === */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05); /* Glassy box background */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 24px;
+  border-radius: 50px; /* Pill shape */
+}
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .nav-links a:hover { color: var(--text-main); }
-.nav-links .btn { margin-left: 16px; }
+.nav-links .btn { margin-left: 8px; }
 
 /* Tactile, non-glowing Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 10px 18px; border-radius: var(--radius-sm); border: 1px solid transparent; 
   cursor: pointer; font-weight: 600;
-  transition: all 0.15s ease; /* Faster, snappier transition */
+  transition: all 0.15s ease;
   text-decoration: none;
 }
 .btn-primary {
   background-color: var(--accent1);
   color: white;
-  /* Harder shadow for a physical button feel */
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .btn-primary:hover {
@@ -165,7 +179,7 @@ input, textarea, .form-control {
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--surface-border);
-  background: #141414; /* Darker inset field */
+  background: #141414;
   color: var(--text-main);
   font-family: inherit;
   transition: border-color 0.15s ease;
@@ -188,7 +202,6 @@ input::placeholder, textarea::placeholder { color: #52525b; }
   letter-spacing: -2px;
 }
 
-/* Flat, clean progress bar */
 .progress-bar-wrap { margin-top: 16px; }
 .progress-bar { height: 8px; border-radius: 4px; background: #262626; overflow: hidden; }
 .progress-fill {
@@ -198,14 +211,12 @@ input::placeholder, textarea::placeholder { color: #52525b; }
   transition: width 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 
-/* Roadmap Tree */
 .road-tree { display: flex; gap: 16px; align-items: center; margin: 16px 0; overflow-x: auto; padding-bottom: 8px;}
 .node { padding: 8px 16px; border-radius: var(--radius-sm); background: var(--surface-bg); border: 1px solid var(--surface-border); font-size: 14px; white-space: nowrap;}
 .node.completed { background: rgba(16, 185, 129, 0.1); color: var(--accent2); border-color: var(--accent2); font-weight: 600;}
 .node.in-progress { border-color: var(--accent1); color: var(--accent1); }
 .node.locked { opacity: 0.5; border: 1px dashed var(--surface-border); }
 
-/* Lists & Tasks */
 .tasks-announcements { display: grid; grid-template-columns: 1fr 380px; gap: 24px; margin-top: 24px; }
 .task-list { list-style: none; }
 .task-list li {
@@ -246,14 +257,12 @@ input::placeholder, textarea::placeholder { color: #52525b; }
 .admin-side a:hover, .admin-side a.active { background: var(--surface-hover); color: var(--text-main); }
 .admin-main { display: flex; flex-direction: column; gap: 24px; }
 
-/* Application Cards */
 .application-card {
   background: var(--surface-hover); border: 1px solid var(--surface-border);
   padding: 24px; border-radius: var(--radius); margin-bottom: 16px;
 }
 .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--surface-border); }
 
-/* Badges */
 .badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 .badge.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
 .badge.accepted { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -303,84 +312,4 @@ input::placeholder, textarea::placeholder { color: #52525b; }
   .nav { padding: 16px; }
   .nav-links { display: none; }
   .admin-side { position: relative; top: 0; }
-}
-/* --- NEW CUSTOM HEADER STYLES --- */
-
-/* 1. Main Header Container */
-.custom-top-nav {
-    width: 100%;
-    padding: 15px 40px; /* Adjust left/right padding to edge of screen */
-    background-color: transparent; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle bottom line */
-    box-sizing: border-box;
-}
-
-/* 2. Flexbox to push Left and Right sides apart */
-.nav-inner-container {
-    display: flex;
-    justify-content: space-between; /* Pushes brand to left, nav to right */
-    align-items: center; /* Centers them vertically */
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* 3. The Left Side (Logo & Subtitle Stack) */
-.brand-stack {
-    display: flex;
-    flex-direction: column; /* Stacks them vertically */
-    gap: 4px; /* Very tight space between logo and subtitle */
-}
-
-.brand-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    line-height: 1; /* Removes hidden vertical space */
-}
-
-.brand-subtitle {
-    font-size: 0.65rem;
-    letter-spacing: 1.5px;
-    color: #888;
-    text-transform: uppercase;
-    line-height: 1;
-}
-
-/* 4. The Right Side (The "Cool Box" Nav) */
-.cool-nav-box {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: rgba(255, 255, 255, 0.05); /* Slightly visible glassy background */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
-    padding: 8px 25px; /* Creates the box shape */
-    border-radius: 50px; /* Makes it a pill shape! */
-    backdrop-filter: blur(10px); /* Apple-style blur effect */
-}
-
-/* 5. Nav Link Styling inside the box */
-.cool-nav-box .nav-link {
-    color: #ccc;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.cool-nav-box .nav-link:hover {
-    color: white;
-}
-
-/* Make Login stand out slightly */
-.cool-nav-box .login-text {
-    color: white;
-    font-weight: bold;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    padding-left: 20px; /* Separates login from the rest */
 }

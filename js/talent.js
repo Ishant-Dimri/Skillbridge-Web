@@ -89,3 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
         applySort();
     }, 400);
 });
+import { db } from './firebase.js';
+import { collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+// We query the 'projects' collection and order them by newest first
+const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+
+// onSnapshot listens FOREVER. 
+onSnapshot(q, (snapshot) => {
+    const feed = document.getElementById('live-project-feed');
+    feed.innerHTML = ""; // Clear the old list
+
+    snapshot.forEach((doc) => {
+        const project = doc.data();
+        
+        // Generate the HTML card for the project
+        feed.innerHTML += `
+            <div style="background: var(--surface-hover); border: 1px solid var(--surface-border); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h3 style="margin: 0 0 8px 0; color: var(--accent1);">${project.title}</h3>
+                <p class="muted small" style="margin: 0 0 12px 0;">Uploaded by Student ID: ${project.studentId}</p>
+                <a href="${project.link}" target="_blank" class="btn btn-sm btn-outline">View Project</a>
+            </div>
+        `;
+    });
+});

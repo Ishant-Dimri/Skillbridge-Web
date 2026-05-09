@@ -6,7 +6,7 @@ const dummyTalentPool = [
     { id: "u_001", name: "Aman Gupta", role: "Frontend Developer", skills: ["React", "CSS", "Firebase"], placementScore: 88, projectsCount: 4, portfolio: "portfolio.html?user=u_001" },
     { id: "u_002", name: "Riya Sharma", role: "AI Engineer", skills: ["Python", "TensorFlow", "Pandas"], placementScore: 96, projectsCount: 6, portfolio: "#" },
     { id: "u_003", name: "Karan Singh", role: "Embedded Systems", skills: ["C++", "Arduino", "IoT"], placementScore: 72, projectsCount: 2, portfolio: "#" },
-    { id: "u_004", name: "Ishant Dimri", role: "Full-Stack Engineer", skills: ["JavaScript", "Node.js", "React"], placementScore: 99, projectsCount: 8, portfolio: "#" },
+    { id: "u_004", name: "Piyush", role: "Full-Stack Engineer", skills: ["JavaScript", "Node.js", "React"], placementScore: 85, projectsCount: 8, portfolio: "#" },
     { id: "u_005", name: "Neha Verma", role: "Data Scientist", skills: ["SQL", "Python", "Tableau"], placementScore: 85, projectsCount: 3, portfolio: "#" }
 ];
 

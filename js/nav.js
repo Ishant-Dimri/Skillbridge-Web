@@ -1,40 +1,59 @@
 // js/nav.js
-// Handles displaying the correct navbar links based on who is logged in
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // 🌟 DUMMY AUTH STATE FOR TESTING 🌟
-    // Change this variable to 'student', 'recruiter', 'admin', or 'logged_out' 
-    // to see how the navbar changes instantly!
-    const currentUserRole = 'recruiter'; 
-    const currentUserName = 'Google HR';
-
     const studentLinks = document.querySelectorAll('.nav-student');
     const recruiterLinks = document.querySelectorAll('.nav-recruiter');
     const adminLinks = document.querySelectorAll('.nav-admin');
     const authBtn = document.getElementById('nav-auth-btn');
 
-    if (currentUserRole === 'logged_out') {
-        // Do nothing, leave secure links hidden, keep "Login" button
-        return; 
-    }
+    // Real-Time Firebase Auth Listener
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // User is logged in! Fetch their role.
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            let role = "student"; // Default fallback
+            
+            if (userDoc.exists()) {
+                role = userDoc.data().role;
+            }
 
-    // Change "Login" button to "Logout / User Profile"
-    authBtn.innerText = `Logout (${currentUserName})`;
-    authBtn.classList.remove('btn-outline');
-    authBtn.classList.add('btn-ghost');
-    authBtn.href = "#"; // You would add your logout logic here later
+            // Update Auth Button to Logout
+            authBtn.innerText = `Logout`;
+            authBtn.classList.remove('btn-outline');
+            authBtn.classList.add('btn-ghost');
+            authBtn.href = "#"; 
+            
+            // Handle Real Logout
+            authBtn.onclick = (e) => {
+                e.preventDefault();
+                signOut(auth).then(() => {
+                    window.location.href = 'index.html';
+                });
+            };
 
-    // Unhide the correct links based on role
-    if (currentUserRole === 'student') {
-        studentLinks.forEach(link => link.style.display = 'inline-block');
-    } 
-    else if (currentUserRole === 'recruiter') {
-        recruiterLinks.forEach(link => link.style.display = 'inline-block');
-    } 
-    else if (currentUserRole === 'admin' || currentUserRole === 'mentor') {
-        adminLinks.forEach(link => link.style.display = 'inline-block');
-        // Admins usually get to see the talent pool too
-        recruiterLinks.forEach(link => link.style.display = 'inline-block'); 
-    }
+            // Unhide correct links based on real database role
+            if (role === 'student') {
+                studentLinks.forEach(link => link.style.display = 'inline-block');
+            } else if (role === 'recruiter') {
+                recruiterLinks.forEach(link => link.style.display = 'inline-block');
+            } else if (role === 'admin' || role === 'mentor') {
+                adminLinks.forEach(link => link.style.display = 'inline-block');
+                recruiterLinks.forEach(link => link.style.display = 'inline-block'); 
+            }
+
+        } else {
+            // User is logged out. Keep UI locked down.
+            studentLinks.forEach(link => link.style.display = 'none');
+            recruiterLinks.forEach(link => link.style.display = 'none');
+            adminLinks.forEach(link => link.style.display = 'none');
+            
+            authBtn.innerText = "Login";
+            authBtn.href = "login.html";
+            authBtn.classList.add('btn-outline');
+            authBtn.classList.remove('btn-ghost');
+        }
+    });
 });

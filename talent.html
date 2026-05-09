@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Talent Pool — SkillBridge</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient">
+  
+  <header class="nav glass">
+    <div class="container nav-inner" style="padding: 0;">
+      <a class="brand" href="index.html"><div class="logo-glow">SkillBridge <span class="tag" style="color: var(--accent2);">Recruiter</span></div></a>
+      <nav class="nav-links">
+        <a href="dashboard.html">My Dashboard</a>
+        <button id="btn-logout" class="btn btn-outline">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+      <div>
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Verified Talent Pool</h1>
+        <p class="muted" style="margin: 0;">Hire top-tier engineers vetted by mentors. Sorted by merit.</p>
+      </div>
+      
+      <!-- The Sorting Engine -->
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <label class="muted small">Sort by:</label>
+        <select id="sort-engine" class="form-control" style="width: 200px; padding: 10px;">
+          <option value="score_desc">Readiness Score (High to Low)</option>
+          <option value="score_asc">Readiness Score (Low to High)</option>
+          <option value="projects_desc">Most Projects Completed</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- The Talent Grid -->
+    <div id="talent-grid" class="projects-grid">
+      <div class="glass" style="grid-column: 1 / -1; text-align: center;">
+        <p class="muted">Loading talent pipeline...</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/talent.js"></script>
+</body>
+</html>

@@ -3,18 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Skill Tracks — SkillBridge</title>
+<title>SkillBridge — Learn Build Showcase</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gradient">
+  
+  <!-- SAFE RESTORED HEADER START -->
   <header class="nav glass">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html">
-        <div class="logo-glow">SkillBridge</div>
+    <div class="container nav-inner" style="display: flex; justify-content: space-between; align-items: center;">
+      
+      <!-- Original Logo & Tagline -->
+      <a class="brand" href="index.html" style="text-decoration: none; display: flex; flex-direction: column; gap: 12px;">
+        <div class="logo-glow" style="font-size: 1.5rem; font-weight: bold; color: white;">
+          <span style="color: #ff5722; margin-right: 5px;">●</span>SkillBridge
+        </div>
+        <small class="tag" style="color: #888; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Learn → Build → Showcase → Get Job Ready</small>
       </a>
-         <nav class="nav-links">
+      
+      <!-- The Cool Box around your original links -->
+      <nav class="nav-links">
         <a href="index.html" class="nav-link home-link">
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -28,11 +38,11 @@
         <a href="dashboard.html">Dashboard</a>
         <a href="talent.html">Talent Pool</a>
         <a href="admin.html">Admin Panel</a>
-        <a href="login.html" class="btn btn-ghost">Login</a>
+       <!-- place this in your nav -->
+<a id="nav-auth-btn" class="btn btn-ghost" href="login.html">Login</a>
       </nav>
     </div>
   </header>
-
   <main class="container roadmap-page">
     <section class="intro glass">
       <h1>Skill Tracks</h1>

@@ -5,6 +5,7 @@ const _k1 = "AIzaSy";
 const _k2 = "DYUNW9mqTvKQ3kxSEJRaYgUNDtCDTZF4s"; 
 const GEMINI_API_KEY = _k1 + _k2; 
 
+// 🚨 UPDATED SYSTEM PROMPT 🚨
 const SYSTEM_PROMPT = `
 You are the official AI Assistant for SkillBridge, a student engineering learning platform.
 Here are the rules and facts you must know:
@@ -13,6 +14,8 @@ Here are the rules and facts you must know:
 3. The "Skill Gap Analyzer" compares their completed skills against job roles to show what they are missing.
 4. Users can upload projects to the "Project Showcase".
 5. They can share a "Public Portfolio" link with recruiters.
+6. ROADMAP RULE: If a user asks for a roadmap, career path, or how to learn a skill, you MUST format your answer as a structured, step-by-step roadmap. Use "Phase 1", "Phase 2", etc., and use bullet points for specific skills, tools, and projects they should build. Keep it actionable.
+
 Keep answers concise, friendly, and highly encouraging. Use emojis.
 `;
 
@@ -93,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, // The camelCase fix!
+                    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
                     contents: chatHistory 
                 })
             });
@@ -116,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(error);
             document.getElementById(typingId).innerHTML = `<strong style="color: #ef4444;">Error:</strong> ${error.message}`;
             
-            // Auto-wipe the corrupted memory so it can try fresh on the next message
             sessionStorage.removeItem('sb_history');
             chatHistory = [];
         }
@@ -142,7 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return msgId;
     }
 
+    // 🚨 UPDATED TEXT FORMATTER 🚨
     function formatText(text) {
-        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#deff9a;">$1</strong>') // Bolds text and makes it green
+            .replace(/^\* (.*)/gm, '&bull; $1')  // Converts asterisk bullets to nice dot bullets
+            .replace(/^- (.*)/gm, '&bull; $1')   // Converts dash bullets to nice dot bullets
+            .replace(/\n/g, '<br>');             // Converts new lines
     }
 });

@@ -1,118 +1,143 @@
-// js/portfolio.js
+// js/dashboard.js
 // 🛑 FIREBASE COMMENTED OUT FOR DUMMY DEMO 🛑
 
-// Dictionary to convert raw skill IDs to readable tags
 const skillLabels = {
-    cpp: 'C/C++', arduino: 'Arduino & Embedded', circuit: 'Circuit Design',
-    iot: 'IoT & Sensors', matlab: 'MATLAB', python: 'Python', js: 'JavaScript'
+    html: 'HTML Semantics', css: 'CSS & Flexbox', js: 'JavaScript',
+    react: 'React', api: 'REST APIs', testing: 'Unit Testing',
+    node: 'Node.js', deploy: 'Cloud Deployment', design: 'System Design',
+    python: 'Python', data: 'Data Analysis', models: 'ML Models', nn: 'Neural Networks'
 };
 
-// 🌟 DUMMY USER PROFILE 🌟
-const dummyUserProfile = {
-    name: "Rohan",
-    branch: "Electrical Engineering",
+// 🌟 DUMMY STUDENT DATA 🌟
+const dummyUserData = {
+    name: "Ishant Dimri",
     email: "ishant@example.com",
     placementScore: 92,
-    progress: { cpp: true, arduino: true, circuit: true, iot: true, python: true, js: true }
+    progress: { html: true, css: true, js: true, react: true, api: true }
 };
 
-// 🌟 DUMMY EE PROJECTS DATA 🌟
-const dummyProjectsData = [
-    {
-        title: "Autonomous Line-Following Robot",
-        description: "Engineered the hardware integration and programmed PID tuning for an autonomous robot. Utilized an Arduino Nano, L298N motor drivers, and N20 motors for precise, real-time trajectory correction.",
-        tech: ["C++", "Arduino", "PID Control", "Circuit Design"],
-        link: "#"
-    },
-    {
-        title: "Resource-Constrained Energy Harvester",
-        description: "Drafted a multidisciplinary engineering solution focused on energy harvesting and smart water conservation, specifically tailored for deployment in remote, forest-terrain campuses.",
-        tech: ["System Design", "Renewable Energy", "Sensors"],
-        link: "#"
-    },
-    {
-        title: "UAV & Drone Hardware Prototyping",
-        description: "Explored Electronic Speed Controllers (ESCs), power distribution boards, and sensor wiring schematics for custom drone builds and UAV aerodynamics.",
-        tech: ["UAV Hardware", "IoT", "Embedded Systems"],
-        link: "#"
-    },
-    {
-        title: "SkillBridge Progress Engine (Software)",
-        description: "Built a dynamic web application utilizing JavaScript and Firebase to calculate placement readiness, showcasing cross-disciplinary skills in both hardware and software environments.",
-        tech: ["JavaScript", "Firebase", "Web Development"],
-        link: "#"
-    }
+const defaultTasks = [
+    { id: 't1', title: 'Complete Beginner Module: HTML', points: 10 },
+    { id: 't2', title: 'Build a small project', points: 20 },
+    { id: 't3', title: 'Mock interview practice', points: 15 }
 ];
 
-// 🌟 DUMMY CERTIFICATES DATA 🌟
-const dummyCertificatesData = [
-    { platform: "Cisco", courseName: "Campus Ambassador Brand Executive", link: "#" },
-    { platform: "Coursera", courseName: "Introduction to Internet of Things (IoT)", link: "#" },
-    { platform: "Udemy", courseName: "Machine Learning A-Z: AI & Python", link: "#" }
-];
-
-// ==========================================
-// RENDER THE PORTFOLIO UI
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Populate Header & Score
+    // ==========================================
+    // 1. POPULATE HEADER, SCORE, & PROGRESS BARS
+    // ==========================================
     const nameEl = document.getElementById('user-name');
-    if(nameEl) nameEl.innerHTML = `${dummyUserProfile.name} <span style="font-size: 14px; color: var(--accent2); font-weight: normal; margin-left: 10px;">| ${dummyUserProfile.branch}</span>`;
-    
-    const contactBtn = document.getElementById('contact-btn');
-    if(contactBtn) contactBtn.href = `mailto:${dummyUserProfile.email}`;
-    
-    const scoreEl = document.getElementById('user-score');
-    if(scoreEl) scoreEl.innerText = `${dummyUserProfile.placementScore}%`;
-    
-    const fillEl = document.getElementById('score-fill');
-    if(fillEl) fillEl.style.width = `${dummyUserProfile.placementScore}%`;
+    if (nameEl) nameEl.innerText = dummyUserData.name;
 
-    // 2. Populate Skills
+    const scoreEl = document.getElementById('user-score');
+    const fillEl = document.getElementById('score-fill');
+    const placementEl = document.getElementById('placement-score');
+    const progressFill = document.getElementById('progress-fill');
+    const progressPercent = document.getElementById('progress-percent');
+
+    // Helper function to update all visual scores at once
+    function updateScores() {
+        if (scoreEl) scoreEl.innerText = `${dummyUserData.placementScore}%`;
+        if (placementEl) placementEl.innerText = `${dummyUserData.placementScore}`;
+        if (progressPercent) progressPercent.innerText = `${dummyUserData.placementScore}%`;
+        
+        if (fillEl) {
+            fillEl.style.width = `${dummyUserData.placementScore}%`;
+            fillEl.style.transition = "width 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
+        }
+        if (progressFill) {
+            progressFill.style.width = `${dummyUserData.placementScore}%`;
+            progressFill.style.transition = "width 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
+        }
+    }
+
+    // Set initial scores on page load
+    updateScores();
+
+
+    // ==========================================
+    // 2. POPULATE SKILLS
+    // ==========================================
     const skillsContainer = document.getElementById('user-skills');
     if (skillsContainer) {
         skillsContainer.innerHTML = "";
-        Object.entries(dummyUserProfile.progress).forEach(([key, done]) => {
+        Object.entries(dummyUserData.progress).forEach(([key, done]) => {
             if (done && skillLabels[key]) {
-                skillsContainer.innerHTML += `
-                    <span style="background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); color: #a78bfa; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: inline-block; margin: 4px;">
-                        ${skillLabels[key]}
-                    </span>`;
+                skillsContainer.innerHTML += `<span class="tech-tag" style="background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.2); color: #a78bfa; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-right: 6px; display: inline-block; margin-bottom: 6px;">${skillLabels[key]}</span>`;
             }
         });
     }
 
-    // 3. Populate Projects
-    const projectsContainer = document.getElementById('user-projects');
-    if (projectsContainer) {
-        projectsContainer.innerHTML = "";
-        dummyProjectsData.forEach((p) => {
-            projectsContainer.innerHTML += `
-                <div class="project-card glass" style="padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                    <div class="project-body">
-                        <h4 style="margin:-top: 0; margin-bottom: 8px; color: var(--text-main); font-size: 18px;">${p.title}</h4>
-                        <p class="muted small" style="line-height: 1.6; margin-bottom: 16px;">${p.description}</p>
-                        <div class="meta" style="margin-bottom: 16px; display:flex; gap:8px; flex-wrap:wrap;">
-                            ${p.tech.map(t => `<span class="tech" style="font-size:0.8rem; background: rgba(16, 185, 129, 0.1); color:#10b981; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.2);">${t}</span>`).join('')}
-                        </div>
-                        <a class="btn btn-sm btn-outline" style="display: block; text-align: center; text-decoration: none;" href="${p.link}" target="_blank">View Code / Demo</a>
-                    </div>
-                </div>
-            `;
+    // ==========================================
+    // 3. VIEW PORTFOLIO BUTTON
+    // ==========================================
+    const portfolioBtn = document.getElementById('portfolio-link-btn');
+    if (portfolioBtn) {
+        portfolioBtn.onclick = (event) => {
+            event.preventDefault(); 
+            window.open('portfolio.html', '_blank'); // Instantly opens dummy portfolio
+        };
+    }
+
+    // ==========================================
+    // 4. RENDER DUMMY TASKS
+    // ==========================================
+    const list = document.getElementById('tasks-list');
+    if (list) {
+        list.innerHTML = '';
+        defaultTasks.forEach(t => {
+            const li = document.createElement('li');
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            li.style.marginBottom = '12px';
+            li.style.paddingBottom = '12px';
+            li.style.borderBottom = '1px solid var(--surface-border)';
+            
+            li.innerHTML = `<div><strong style="color: var(--text-main);">${t.title}</strong><div class="muted small" style="margin-top: 4px;">Points: ${t.points}</div></div>`;
+            
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = true; // Checked for dummy display
+            cb.style.width = "18px";
+            cb.style.height = "18px";
+            
+            li.appendChild(cb);
+            list.appendChild(li);
         });
     }
 
-    // 4. Populate Certificates
-    const certsContainer = document.getElementById('portfolio-certificates') || document.getElementById('user-certificates');
-    if (certsContainer) {
-        certsContainer.innerHTML = ""; 
-        dummyCertificatesData.forEach((cert) => {
-            certsContainer.innerHTML += `
-                <div style="border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <div style="background: rgba(59, 130, 246, 0.2); padding: 12px; border-radius: 8px;">
-                            <i class="fa-solid fa-award" style="color: #3b82f6; font-size: 20px;"></i>
-                        </div>
-                        <div>
-                            <h4 style="margin: 0 0 4px 0
+    // ==========================================
+    // 5. CERTIFICATE UPLOAD: +2% SCORE LOGIC
+    // ==========================================
+    const certForm = document.getElementById('upload-cert-form');
+    
+    if (certForm) {
+        certForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Stop the page from reloading
+
+            const btn = document.getElementById('cert-submit-btn');
+            
+            // Visual feedback for the user
+            btn.innerText = "Verifying Credential...";
+            btn.disabled = true;
+
+            // Simulate a brief 1-second network delay for realism
+            setTimeout(() => {
+                // Increase the score by 2, capped at a maximum of 100
+                dummyUserData.placementScore = Math.min(dummyUserData.placementScore + 2, 100);
+
+                // Re-run the score function to animate the progress bars to the new number
+                updateScores();
+
+                // Success message and reset
+                alert("Certificate verified! Your placement readiness score increased by +2%.");
+                certForm.reset();
+                btn.innerText = "Upload to Portfolio";
+                btn.disabled = false;
+                
+            }, 1000); 
+        });
+    }
+});
